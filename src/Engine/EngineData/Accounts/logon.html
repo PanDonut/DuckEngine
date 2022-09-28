@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <title>Game Login</title>
+    <head>
+        <style>
+            .loginFrame {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: fixed;
+            z-index: 9999999999999;
+            }
+            .loginpage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 999999999999;
+            }
+        </style>
+        <script>
+            window.addEventListener("message", (event) => {
+                if (event.data.password != undefined) {
+                    console.log(event.data);
+                    localStorage.setItem("mail", event.data.mail);
+                    localStorage.setItem("name", event.data.name);
+                    localStorage.setItem("uid", event.data.uid);
+                } 
+                if (event.data == "__KILLPROCESS") {
+                    setTimeout(() => {
+                        window.close();
+                        window.opener.postMessage("LOGON");
+                    }, 100)}
+            });
+        </script>
+    </head>
+    <body>
+        <div class="loginpage">
+            <iframe class="loginFrame" src="https://login.theduck.ml/v3/auth/login&form=iframe&theme=dark&appId=420691" />
+        </div>
+    </body>
+</html>

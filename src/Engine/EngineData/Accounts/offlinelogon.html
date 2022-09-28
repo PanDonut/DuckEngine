@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <title>Game Login</title>
+    <head>
+        <style>
+            .loginFrame {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: fixed;
+            z-index: 9999999999999;
+            }
+            .loginpage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 999999999999;
+            }
+        </style>       
+    </head>
+    <body>
+        <div class="loginpage">
+            <input type="text" placeholder="nick">
+            <button>OK</button>
+        </div>
+        <script>
+            
+            document.getElementsByTagName('button')[0].onclick = () => {
+                localStorage.setItem("mail", "Anonymous");
+                localStorage.setItem("name", document.getElementsByTagName('input')[0].value);
+                localStorage.setItem("uid", "Anonymous@" + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
+                window.close();
+                window.opener.postMessage("LOGON");
+            }
+        </script>
+    </body>
+</html>

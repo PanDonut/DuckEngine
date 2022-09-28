@@ -1,0 +1,13 @@
+{
+    "map": "dm_arena",
+    "maxplayers": 1,
+    "sv": {
+        "anonymous": true
+    },
+    "cl": {
+
+    },
+    "gm": {
+
+    }
+}
