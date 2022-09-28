@@ -22,3 +22,11 @@ setTimeout(() => {
     OfflineLogon();
     if (GetLoginData() != null) Start();
 }, 1000)
+
+window.addEventListener(
+    'beforeunload',
+    function(e){
+        e.stopPropagation();e.preventDefault();return false;
+    },
+    true
+);

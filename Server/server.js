@@ -10,13 +10,15 @@ const router = Router()
 // Main route serves the index HTML
 
 // Everything else that's not index 404s
-router.use('*', (req, res) => {
-    res.status(404).send({ message: 'Not Found' })
-})
+// router.use('*', (req, res) => {
+//     res.status(404).send({ message: 'Not Found' })
+// })
+
+
 
 // Create express app and listen on port 4444
 const app = express()
-app.use(router)
+
 const server = app.listen(process.env.PORT || 4444, () => {
     console.log(`Listening on port http://localhost:4444...`)
 })
@@ -29,6 +31,15 @@ const ioServer = new Server(server, {
 
 let clients = {}
 
+app.get("/players", function (req, res) {
+    res.json(clients);
+});
+
+app.get("/config", function (req, res) {
+    res.json(config);
+});
+
+
 // Socket app msgs
 ioServer.on('connection', (client) => {
     console.log(
@@ -38,6 +49,7 @@ ioServer.on('connection', (client) => {
     if (Object.keys(clients).length == config.maxplayers) {
         console.warn(`Disconnecting ${client.id}`, "Reason: Server full")
         client.disconnect();
+        delete clients[client.id]
     }
     clients[client.id] = {}
 
