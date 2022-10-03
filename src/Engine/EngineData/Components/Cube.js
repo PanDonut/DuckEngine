@@ -26,7 +26,7 @@ export const Cube = (props) => {
   );
 
   return (
-    <mesh ref={cubeRef} castShadow layers={props.layers}>
+    <mesh ref={cubeRef} castShadow receiveShadow layers={props.layers}>
       <boxBufferGeometry args={[0.5, 0.5, 0.5]} />
       <meshLambertMaterial color={color} />
     </mesh>

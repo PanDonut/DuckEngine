@@ -10,17 +10,27 @@ import { usePersonControls } from "./Input"
 import { Physics, useSphere, useBox } from "@react-three/cannon"
 import { Vector3 } from "three"
 import { Raycaster } from "three"
-import { FInterp, FInterpFromConst } from "../Functions"
+import { clamp, FInterp, FInterpFromConst, RandomFloatInRange } from "../Functions"
 import { useReducer } from "react"
+import Skybox from "../Graphics/Skybox"
+import Weapons, { WeaponList } from "./Weapons"
+import { ChangeState } from "./Animation/StateMachine"
+import { Matrix4 } from "three"
+import { Weapon } from "./Weapons/WeaponHitscan"
 
 export const ControlsWrapper = ({ socket }) => {
     const [, forceUpdate] = useReducer((x) => x + 1, 0);
     const { camera, scene } = useThree();
+    // window.camera = camera;
     const [updateCallback, setUpdateCallback] = useState(null)
+    const [astate, setAState] = useState("stop")
+    const [roty, setRY] = useState(0)
     const controlsRef = useRef();
+    const gr = useRef();
+    const gro = useRef();
 
     // init movement
-    const speed = 300;
+    const speed = 600;
     const bulletSpeed = 30;
     const bulletCoolDown = 300;
     const jumpSpeed = 5;
@@ -50,6 +60,11 @@ export const ControlsWrapper = ({ socket }) => {
 
     const { forward, backward, left, right, jump, crouch } = usePersonControls();
 
+    /**
+     * 
+     * @param {*} position 
+     * @param {Matrix4} rotation 
+     */
 
     const onControlsChange = (position, rotation) => {
         const { id } = socket
@@ -67,13 +82,55 @@ export const ControlsWrapper = ({ socket }) => {
     }  
 
     const [height, setHeight] = useState(0);
+    const [selectedWeapon, setSelectedWeapon] = useState(0);
+    const [Loadout, setLoadout] = useState([
+      "bab", "aba", "daba"
+    ]);
+
+    /**
+     * 
+     * @param {Vector3} spread 
+     */
+
+    function Shoot(spread) {
+      let forwardVector = new Vector3();
+      let ArrayOfObjects = [];     
+      camera.getWorldDirection(forwardVector)
+      forwardVector.add(spread);
+      console.log(forwardVector)
+      const raycaster = new Raycaster(camera.position, (forwardVector));
+      // raycaster.setFromCamera({x: 0, y: 0}, camera);
+      raycaster.intersectObjects(scene.children, true, ArrayOfObjects)
+      // console.log(ArrayOfObjects[0])
+      console.log(ArrayOfObjects[0].object.userData.id)   
+      if (ArrayOfObjects[0].object.userData.id) {
+        window.Server.emit("dmg", {id: ArrayOfObjects[0].object.userData.id, dmg: 5})
+      }  
+    }
+
+    useEffect(() => {
+      window.addEventListener("click", () => {  
+        var spread =  new Vector3(0,0,0);           
+        Shoot(spread);
+        for (let index = 0; index < WeaponList[Loadout[selectedWeapon]].bulletsPerShot - 1; index++) {
+          var thisSpread = new Vector3(RandomFloatInRange(WeaponList[Loadout[selectedWeapon]].spread, 0), RandomFloatInRange(WeaponList[Loadout[selectedWeapon]].spread, 0), 0);
+          Shoot(thisSpread)
+          console.log("THIS", thisSpread)
+        }
+      })
+      // window.addEventListener("mousemove", (e) => {
+      //   if (gro.current) {
+      //     FInterp(Math.abs(gro.current.rotation.y), 100, 1, 20, setRY)
+      //   }
+      // })
+    }, []) 
 
     useEffect(() => {
       // console.log(crouch)
       if (crouch) {
-        FInterp(height, 0.5, 0.05, 20, setHeight);
+        FInterp(height, 2.55, 0.05, 9, setHeight);
       } else {
-        FInterp(height, 1, 0.05, 20, setHeight);
+        FInterp(height, 3.45, 0.05, 9, setHeight);
       }
     }, [crouch])
 
@@ -124,36 +181,64 @@ export const ControlsWrapper = ({ socket }) => {
             setHorizontal(0)
           }
         } 
-        else if (state.current.crouching) {
+        else if (state.current.crouching) {         
           if (forward) {
-            setVertical(0.5);      
+            setVertical(0.6);      
           } else if (backward) {
-            setVertical(-0.5);
+            setVertical(-0.6);
           }  else {
             setVertical(0)
           }
           if (right) {
-            setHorizontal(0.5);      
+            setHorizontal(0.6);      
           } else if (left) {
-            setHorizontal(-0.5);
+            setHorizontal(-0.6);
           }  else {
             setHorizontal(0)
           }
+          if (forward && !right && !left) {
+            ChangeState("cf")
+          } 
+          if (!forward && right) {
+
+          } 
+          if (!forward && left) {
+
+          } 
+          if (!forward && !right && !left) {
+            ChangeState("crouch")
+          } 
         }
         else {
           if (forward) {
-            setVertical(1);      
+            setVertical(1);               
           } else if (backward) {
             setVertical(-1);
           }  else {
-            setVertical(0)
+            setVertical(0)            
           }
           if (right) {
-            setHorizontal(1);      
+            setHorizontal(1);    
           } else if (left) {
             setHorizontal(-1);
           }  else {
             setHorizontal(0)
+          }
+          if (right && forward) {
+            ChangeState("sr")
+          } else if (left && forward) {
+            ChangeState("sl")
+          }
+          if (forward && !right && !left) {
+            ChangeState("run")  
+          }
+          if (right && !forward) {
+            ChangeState("r")
+          } else if (left && !forward) {
+            ChangeState("l")
+          }
+          if (!right && !left && !forward && !backward) {
+            ChangeState("idle")
           }
         }
         if (crouch) {
@@ -181,15 +266,45 @@ export const ControlsWrapper = ({ socket }) => {
           velocity.z * delta
         );
 
+        camera.eulerOrder = 'YXZ'
+
+        // console.log(cameraDirection.toArray()[1])
+
         /** Updates camera position */
         camera.position.set(
           sphereRef.current.position.x,
           height + sphereRef.current.position.y,
           sphereRef.current.position.z
         );
+        // gr.current.position.set(
+        //   sphereRef.current.position.x,
+        //   height + sphereRef.current.position.y,
+        //   sphereRef.current.position.z
+        // );
+
+        var dist = 0.075;
+        var cwd = new Vector3();
+    
+        camera.getWorldDirection(cwd);
+    
+        cwd.multiplyScalar(dist);
+        cwd.add(camera.position);
+    
+        gr.current.position.set(cwd.x, cwd.y, cwd.z);
+        gr.current.setRotationFromQuaternion(camera.quaternion);
+
+        if ((forward || backward || right || left) && !crouch) {
+          setAState("run")
+        } else if ((forward || backward || right || left) && crouch) {
+          setAState("crouch")
+        } else {
+          setAState("idle")
+        } 
         
         if (controlsRef.current) {
-          onControlsChange(sphereRef.current.position, camera.rotation);
+          var rot = new Vector3(0, 0, 0);
+          camera.getWorldDirection(rot)
+          onControlsChange(sphereRef.current.position, cameraDirection);
         }
 
         if (state.current.jumping && state.current.vel[1] < 0) {
@@ -220,8 +335,15 @@ export const ControlsWrapper = ({ socket }) => {
       });
 
     return (
-      <group>    
-        <PointerLockControls ref={controlsRef} camera={camera} /> 
-      </group>    
+      <>
+        <group>  
+          <PointerLockControls minPolarAngle={0.01} maxPolarAngle={3} ref={controlsRef} camera={camera} />       
+        </group> 
+        <group ref={gr} scale={[0.1, 0.1, 0.1]}>
+          <group ref={gro} position={[0.3, -0.3, 0]}>
+            <Weapon state={astate} />
+          </group>        
+        </group>
+      </>   
     )
 }

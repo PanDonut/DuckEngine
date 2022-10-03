@@ -30,6 +30,7 @@ function App() {
   return (
     <>
       <Game/>
+      <div className='cel'/>
     </>
   )
 }

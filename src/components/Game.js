@@ -7,16 +7,18 @@ import { OrbitControls, Text, Stats, Environment, Lightformer, ambientLight } fr
 import { useRef } from 'react';
 import { useLoader } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import Sunset from './venice_sunset_1k.hdr'
+import Sunset from './industrial_sunset_02_2k.hdr'
 import { usePersonControls } from '../Engine/EngineData/Player/Input'
 import { useSphere, Physics } from "@react-three/cannon";
 import { DefMap } from "../Engine/EngineData/Maps/defmap";
 import { Cube } from "../Engine/EngineData/Components/Cube.js";
 import { Plane } from "../Engine/EngineData/Components/Plane";
+import { Raycaster } from "three";
 
 export default function Game() {
     var bSunset = [Sunset]
 
+    const CanvasRef = useRef();
     const [socketClient, setSocketClient] = useState(null)
     const [clients, setClients] = useState({})
 
@@ -39,8 +41,17 @@ export default function Game() {
         }       
         window.ongamestart = () => {
             console.log("gamestart event")
-        }       
+        }     
+        
     }, [])
+
+    // useEffect(() => {
+    //     window.addEventListener("click", () => {
+    //       const raycaster = new Raycaster();
+    //       raycaster.setFromCamera({x: 0, y: 0}, camera);
+    //       console.log(raycaster.intersectObject(CanvasRef.current))
+    //     })
+    //   }, []) 
 
     useEffect(() => {
         if (socketClient) {
@@ -57,7 +68,7 @@ export default function Game() {
 
     return (
             socketClient && (
-              <Canvas className='GameViewport'>
+              <Canvas ref={CanvasRef} className='GameViewport'>
                   <Stats /> 
                   <Physics
                     gravity={[0, -9, 0]}
@@ -83,8 +94,9 @@ export default function Game() {
                     <Cube position={[0, 0.5, 5.5]} type={"Static"} />
                 </Physics>             
                   {/* <Skybox position={[0,0,0]} /> @DEPRECATED */}
-                  <gridHelper rotation={[0, 0, 0]} position={[0,0,0]} />
-                  <ambientLight intensity={0.1} />
+                  <Environment background={true} files={Sunset} />
+                  {/* <gridHelper rotation={[0, 0, 0]} position={[0,0,0]} /> */}
+                  {/* <ambientLight intensity={0.1} /> */}
                   <directionalLight intensity={1} />
                   {Object.keys(clients)
                       .filter((clientKey) => clientKey !== socketClient.id)
@@ -92,10 +104,14 @@ export default function Game() {
                           const { position, rotation } = clients[client]
                           return (
                               <UserWrapper
+                                  onClick={() => {
+                                    console.log(client)
+                                  }}
                                   key={client}
                                   id={client}
                                   position={position}
-                                  rotation={rotation}                                  
+                                  rotation={rotation}    
+                                  animState={clients[client].state}                              
                               />
                           )
                       })}

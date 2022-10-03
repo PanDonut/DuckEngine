@@ -1,6 +1,6 @@
 {
     "map": "dm_arena",
-    "maxplayers": 1,
+    "maxplayers": 2,
     "sv": {
         "anonymous": true
     },

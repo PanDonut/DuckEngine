@@ -59,6 +59,10 @@ ioServer.on('connection', (client) => {
         console.log(client.id + " logged in as " + data.name + " (" + data.uid + ")")
     })
 
+    client.on("state", (state) => {
+        clients[client.id].state = state;
+    })
+
     //Add a new client indexed by his id
     // clients[client.id] = {
     //     position: [0, 0, 0],
