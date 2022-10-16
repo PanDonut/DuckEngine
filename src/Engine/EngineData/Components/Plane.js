@@ -13,7 +13,7 @@ export const Plane = () => {
 
   return (
     <mesh ref={ref} receiveShadow={true} scale={[1000, 1000, 1000]}>
-      <planeBufferGeometry />
+      <planeBufferGeometry receiveShadow />
       <meshPhongMaterial color={"skyblue"} receiveShadow />
     </mesh>
   );

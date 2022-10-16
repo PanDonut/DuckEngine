@@ -12,3 +12,9 @@
     border-radius: 50%;
     background-color: #fff;
 }
+
+.UIAmmo {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+}

@@ -1,12 +1,13 @@
 'use strict'
 
 // Import parts of electron to use
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu, MenuItem } = require('electron')
 const path = require('path')
 const url = require('url')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
+
 let mainWindow
 
 // Keep a reference for dev mode
@@ -20,6 +21,7 @@ let dev = false
 if (process.env.NODE_ENV !== undefined && process.env.NODE_ENV === 'development') {
   dev = true
 }
+
 
 function createWindow() {
   // Create the browser window.
@@ -78,6 +80,34 @@ app.on('ready', () => {
   // mainWindow.setFullScreen(true);
   mainWindow.focus()
   mainWindow.setMenu(null)
+
+  const menu = new Menu()
+  menu.append(new MenuItem({
+    label: 'Electron',
+    submenu: [{
+      role: 'help',
+      accelerator: "Alt+Enter",
+      click: () => { mainWindow.setFullScreen(!mainWindow.fullScreen) }
+    }]
+  }))
+  menu.append(new MenuItem({
+    label: 'Electron1',
+    submenu: [{
+      role: 'help',
+      accelerator: "Ctrl+Shift+I",
+      click: () => { mainWindow.openDevTools() }
+    }]
+  }))
+  menu.append(new MenuItem({
+    label: 'Electron2',
+    submenu: [{
+      role: 'help',
+      accelerator: "Ctrl+Shift+R",
+      click: () => { mainWindow.reload() }
+    }]
+  }))
+
+  Menu.setApplicationMenu(menu)
 })
 
 // Quit when all windows are closed.

@@ -13,8 +13,12 @@ import { softShadows } from '@react-three/drei';
 function App() {
 
   softShadows();
+  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
     
   React.useEffect(() => {
+    window.forceUpdate = () => {
+      forceUpdate()
+    }
     window.UID = GetLoginData().uid;
     const logonToast = document.createElement("div");
     logonToast.className = "logonToast";
@@ -31,6 +35,10 @@ function App() {
     <>
       <Game/>
       <div className='cel'/>
+      <div className='UIAmmo'>
+        <h2>{window.PrimaryClip}</h2>
+        <h3>{window.PrimaryAmmo}</h3>
+      </div>
     </>
   )
 }

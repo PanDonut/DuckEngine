@@ -44,23 +44,30 @@ app.get("/config", function (req, res) {
 ioServer.on('connection', (client) => {
     console.log(
         `${client.id} connected, there are currently ${ioServer.engine.clientsCount} users connected`
-    )
+    )  
+  
+    clients[client.id] = {}
+    clients[client.id].health = 125;
 
-    if (Object.keys(clients).length == config.maxplayers) {
+    if (Object.keys(clients).length == config.maxplayers + 1) {
         console.warn(`Disconnecting ${client.id}`, "Reason: Server full")
         client.disconnect();
         delete clients[client.id]
     }
-    clients[client.id] = {}
 
     client.on("UserData", (dat) => {
         var data = JSON.parse(dat);
-        clients[client.id].name = data.name;
+        clients[client.id].name = data.name;        
         console.log(client.id + " logged in as " + data.name + " (" + data.uid + ")")
     })
 
     client.on("state", (state) => {
         clients[client.id].state = state;
+    })
+
+    client.on("dmg", (data) => {
+        console.log(`(${data.id}) ${clients[data.id].name} took ${data.dmg} damage (now ${clients[data.id].health - data.dmg})`)
+        clients[data.id].health = clients[data.id].health - data.dmg
     })
 
     //Add a new client indexed by his id

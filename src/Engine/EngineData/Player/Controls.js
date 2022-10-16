@@ -9,7 +9,7 @@ import { useFrame, useLoader, useThree } from '@react-three/fiber'
 import { usePersonControls } from "./Input"
 import { Physics, useSphere, useBox } from "@react-three/cannon"
 import { Vector3 } from "three"
-import { Raycaster } from "three"
+import { Raycaster, Layer } from "three"
 import { clamp, FInterp, FInterpFromConst, RandomFloatInRange } from "../Functions"
 import { useReducer } from "react"
 import Skybox from "../Graphics/Skybox"
@@ -21,6 +21,7 @@ import { Weapon } from "./Weapons/WeaponHitscan"
 export const ControlsWrapper = ({ socket }) => {
     const [, forceUpdate] = useReducer((x) => x + 1, 0);
     const { camera, scene } = useThree();
+
     // window.camera = camera;
     const [updateCallback, setUpdateCallback] = useState(null)
     const [astate, setAState] = useState("stop")
@@ -82,7 +83,7 @@ export const ControlsWrapper = ({ socket }) => {
     }  
 
     const [height, setHeight] = useState(0);
-    const [selectedWeapon, setSelectedWeapon] = useState(0);
+    let selectedWeapon = 0;
     const [Loadout, setLoadout] = useState([
       "bab", "aba", "daba"
     ]);
@@ -92,38 +93,38 @@ export const ControlsWrapper = ({ socket }) => {
      * @param {Vector3} spread 
      */
 
-    function Shoot(spread) {
-      let forwardVector = new Vector3();
-      let ArrayOfObjects = [];     
-      camera.getWorldDirection(forwardVector)
-      forwardVector.add(spread);
-      console.log(forwardVector)
-      const raycaster = new Raycaster(camera.position, (forwardVector));
-      // raycaster.setFromCamera({x: 0, y: 0}, camera);
-      raycaster.intersectObjects(scene.children, true, ArrayOfObjects)
-      // console.log(ArrayOfObjects[0])
-      console.log(ArrayOfObjects[0].object.userData.id)   
-      if (ArrayOfObjects[0].object.userData.id) {
-        window.Server.emit("dmg", {id: ArrayOfObjects[0].object.userData.id, dmg: 5})
-      }  
-    }
+    // function Shoot(spread) {
+    //   let forwardVector = new Vector3();
+    //   let ArrayOfObjects = [];     
+    //   camera.getWorldDirection(forwardVector)
+    //   forwardVector.add(spread);
+    //   console.log(forwardVector)
+    //   const raycaster = new Raycaster(camera.position, (forwardVector));
+    //   // raycaster.setFromCamera({x: 0, y: 0}, camera);
+    //   raycaster.intersectObjects(scene.children, true, ArrayOfObjects)
+    //   // console.log(ArrayOfObjects[0])
+    //   console.log(ArrayOfObjects[0].object.userData.id)   
+    //   if (ArrayOfObjects[0].object.userData.id) {
+    //     window.Server.emit("dmg", {id: ArrayOfObjects[0].object.userData.id, dmg: 5})
+    //   }  
+    // }
 
-    useEffect(() => {
-      window.addEventListener("click", () => {  
-        var spread =  new Vector3(0,0,0);           
-        Shoot(spread);
-        for (let index = 0; index < WeaponList[Loadout[selectedWeapon]].bulletsPerShot - 1; index++) {
-          var thisSpread = new Vector3(RandomFloatInRange(WeaponList[Loadout[selectedWeapon]].spread, 0), RandomFloatInRange(WeaponList[Loadout[selectedWeapon]].spread, 0), 0);
-          Shoot(thisSpread)
-          console.log("THIS", thisSpread)
-        }
-      })
-      // window.addEventListener("mousemove", (e) => {
-      //   if (gro.current) {
-      //     FInterp(Math.abs(gro.current.rotation.y), 100, 1, 20, setRY)
-      //   }
-      // })
-    }, []) 
+    // useEffect(() => {
+    //   window.addEventListener("click", () => {  
+    //     var spread =  new Vector3(0,0,0);           
+    //     Shoot(spread);
+    //     for (let index = 0; index < WeaponList[Loadout[selectedWeapon]].bulletsPerShot - 1; index++) {
+    //       var thisSpread = new Vector3(RandomFloatInRange(WeaponList[Loadout[selectedWeapon]].spread, 0), RandomFloatInRange(WeaponList[Loadout[selectedWeapon]].spread, 0), 0);
+    //       Shoot(thisSpread)
+    //       console.log("THIS", thisSpread)
+    //     }
+    //   })
+    //   // window.addEventListener("mousemove", (e) => {
+    //   //   if (gro.current) {
+    //   //     FInterp(Math.abs(gro.current.rotation.y), 100, 1, 20, setRY)
+    //   //   }
+    //   // })
+    // }, []) 
 
     useEffect(() => {
       // console.log(crouch)
@@ -334,14 +335,63 @@ export const ControlsWrapper = ({ socket }) => {
         // onControlsChange(controlsRef.current.camera.position, controlsRef.current.camera.rotation)
       });
 
+      useEffect(() => {
+        window.addEventListener("wheel", (e) => {
+          console.log(e.deltaY)
+          if (e.deltaY > 1) {
+            selectedWeapon - 1 >= 0 ?
+            selectedWeapon = selectedWeapon - 1
+            :
+            selectedWeapon = 2
+          }
+          if (e.deltaY < -1) {
+            selectedWeapon + 1 <= 2 ?
+            selectedWeapon = selectedWeapon + 1
+            :
+            selectedWeapon = 0
+          }
+          setLoadout(Loadout)
+          console.log(selectedWeapon)
+          forceUpdate();
+          window.selectedWeapon = selectedWeapon;
+        })
+      }, [])
+
+      useEffect(() => {
+        console.log(selectedWeapon)
+      }, [selectedWeapon])
+
+      useEffect(() => {
+        window.PrimaryAmmo = WeaponList[Loadout[0]].ammoSize;
+        window.PrimaryClip =  WeaponList[Loadout[0]].clipSize;
+
+        window.SecondaryAmmo = WeaponList[Loadout[1]].ammoSize;
+        window.SecondaryClip =  WeaponList[Loadout[1]].clipSize;
+
+        window.MeleeAmmo = WeaponList[Loadout[2]].ammoSize;
+        window.MeleeClip =  WeaponList[Loadout[2]].clipSize;
+
+        forceUpdate();
+        window.forceUpdate();
+      }, [])
+
     return (
       <>
         <group>  
           <PointerLockControls minPolarAngle={0.01} maxPolarAngle={3} ref={controlsRef} camera={camera} />       
         </group> 
-        <group ref={gr} scale={[0.1, 0.1, 0.1]}>
+        <group ref={gr} scale={[0.1, 0.1, 0.1]} renderOrder={2}>
           <group ref={gro} position={[0.3, -0.3, 0]}>
-            <Weapon state={astate} />
+            {
+              Loadout.map((item, index) => {               
+                if (index == selectedWeapon) {
+                  var Itm = WeaponList[item];
+                  return (
+                    <Itm.ref state={astate} camera={camera} scene={scene} />
+                  )
+                }
+              })
+            }
           </group>        
         </group>
       </>   

@@ -78,6 +78,7 @@ export const UserWrapper = ({ position, rotation = [0,0,0,"XYZ"], id, animState}
         Object.keys(actions).forEach(element => {
             if (element != animName) {
                 actions[element].fadeOut(0.1)
+                // actions[element].crossFadeTo(actions[animName])
                 setTimeout(() => {
                     actions[element].stop()
                 }, 100)
@@ -85,27 +86,26 @@ export const UserWrapper = ({ position, rotation = [0,0,0,"XYZ"], id, animState}
          });
     }
 
-    // function IdentifyBodyParts(el) {
-    //     el.children.forEach(element => {
-    //         element.userData.id = id;
-    //         element.castShadow = true;
-    //         if (element.children) {
-    //             IdentifyBodyParts(element);
-    //         }
-    //     });
-    // }
+    function IdentifyBodyParts(el) {
+        el.children.forEach(element => {
+            element.userData.id = id;
+            element.castShadow = true;
+            if (element.children) {
+                IdentifyBodyParts(element);
+            }
+        });
+    }
 
-    // useEffect(() => {
-    //     if (refPrim.current) {          
-    //         refPrim.current.userData.id = id;
-    //         console.log(refPrim.current)
-    //         refPrim.current.children.forEach(element => {
-    //             element.userData.id = id;
-    //             element.castShadow = true;
-    //             IdentifyBodyParts(element);
-    //         });
-    //     }
-    // console.log(rotation)
+    useEffect(() => {
+        if (group.current) {          
+            group.current.userData.id = id;
+            console.log(group.current)
+            group.current.children.forEach(element => {
+                element.userData.id = id;
+                element.castShadow = true;
+                IdentifyBodyParts(element);
+            });
+    }}, [group])
     useEffect(() => {
       var vec = new Vector3();
       var rot = new Vector3().fromArray(rotation);
