@@ -1261,7 +1261,7 @@
     "utility-types" "^3.10.0"
     "zustand" "^3.5.13"
 
-"@react-three/fiber@^8.7.3", "@react-three/fiber@>=6.0", "@react-three/fiber@>=8.0", "@react-three/fiber@latest":
+"@react-three/fiber@^8.7.3", "@react-three/fiber@>=6.0", "@react-three/fiber@>=7.0", "@react-three/fiber@>=8.0", "@react-three/fiber@latest":
   "integrity" "sha512-7Pf+G5ElfIlje86RzogEmiy+68/fqiBjHRf/14b7jCIj+H/37rFmELGT37IRCG+seKvWu9xak54d/RMC/LheWQ=="
   "resolved" "https://registry.npmjs.org/@react-three/fiber/-/fiber-8.7.3.tgz"
   "version" "8.7.3"
@@ -1273,6 +1273,16 @@
     "scheduler" "^0.21.0"
     "suspend-react" "^0.0.8"
     "zustand" "^3.7.1"
+
+"@react-three/postprocessing@^2.6.2":
+  "integrity" "sha512-YvU3oH5Vb2UT+ekhhzHwMTvEYo50VoW8EYMQxmh9TzWaTohSB0GGDanJw5peUMDUgYS1gNjj9cpsk0w/z/7Qpg=="
+  "resolved" "https://registry.npmjs.org/@react-three/postprocessing/-/postprocessing-2.6.2.tgz"
+  "version" "2.6.2"
+  dependencies:
+    "postprocessing" "^6.28.5"
+    "react-merge-refs" "^1.1.0"
+    "screen-space-reflections" "2.5.0"
+    "three-stdlib" "^2.8.11"
 
 "@remix-run/router@1.0.0":
   "integrity" "sha512-SCR1cxRSMNKjaVYptCzBApPDqGwa3FGdjVHc+rOToocNPHQdIYLZBfv/3f+KvYuXDkUGVIW9IAzmPNZDRL1I4A=="
@@ -5178,6 +5188,11 @@
     "picocolors" "^1.0.0"
     "source-map-js" "^1.0.2"
 
+"postprocessing@^6.28.5", "postprocessing@^6.29.0", "postprocessing@>=6.28.0":
+  "integrity" "sha512-bicnFesmIZu53U0f777US8zwE9QyJGKClUhjmvq8+TKMU1BDdUHPJWpXKe0SChEcTSkqvS3xBdqddMVuosgsVA=="
+  "resolved" "https://registry.npmjs.org/postprocessing/-/postprocessing-6.29.0.tgz"
+  "version" "6.29.0"
+
 "potpack@^1.0.1":
   "integrity" "sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ=="
   "resolved" "https://registry.npmjs.org/potpack/-/potpack-1.0.2.tgz"
@@ -5717,6 +5732,11 @@
     "ajv" "^8.8.0"
     "ajv-formats" "^2.1.1"
     "ajv-keywords" "^5.0.0"
+
+"screen-space-reflections@2.5.0":
+  "integrity" "sha512-fWSDMhJS0xwD3LTxRRch7Lb9NzxsR66sCmtDmAA7i+OGnghUrBBsrha85ng7StnCBaLq/BKmZ97dLxWd1XgWdQ=="
+  "resolved" "https://registry.npmjs.org/screen-space-reflections/-/screen-space-reflections-2.5.0.tgz"
+  "version" "2.5.0"
 
 "select-hose@^2.0.0":
   "integrity" "sha512-mEugaLK+YfkijB4fx0e6kImuJdCIt2LxCRcbEYPqRGCs4F2ogyfZU5IAZRdjCP8JPq2AtdNoC/Dux63d9Kiryg=="
@@ -6261,7 +6281,7 @@
   "resolved" "https://registry.npmjs.org/three-mesh-bvh/-/three-mesh-bvh-0.5.16.tgz"
   "version" "0.5.16"
 
-"three-stdlib@^2.14.3":
+"three-stdlib@^2.14.3", "three-stdlib@^2.8.11":
   "integrity" "sha512-81jgpEajYB1HczIKAqcG8oEgRPbKJr/8KfxMY3xIHe9kDNw426PckStLt+GVmV15ezOS+QlUFVSuyjSRPpSLsg=="
   "resolved" "https://registry.npmjs.org/three-stdlib/-/three-stdlib-2.15.0.tgz"
   "version" "2.15.0"
@@ -6290,7 +6310,7 @@
     "math-ds" ">= 1.0.0 < 2.0.0"
     "sparse-octree" "^6.0.2"
 
-"three@^0.144.0", "three@^0.x.x", "three@>= 0.123.0", "three@>=0.103.0", "three@>=0.122.0", "three@>=0.126", "three@>=0.133", "three@>=0.137":
+"three@^0.144.0", "three@^0.x.x", "three@>= 0.123.0", "three@>= 0.125.0 < 0.146.0", "three@>=0.103.0", "three@>=0.122.0", "three@>=0.126", "three@>=0.133", "three@>=0.136.0", "three@>=0.137", "three@>=0.141.0":
   "integrity" "sha512-R8AXPuqfjfRJKkYoTQcTK7A6i3AdO9++2n8ubya/GTU+fEHhYKu1ZooRSCPkx69jbnzT7dD/xEo6eROQTt2lJw=="
   "resolved" "https://registry.npmjs.org/three/-/three-0.144.0.tgz"
   "version" "0.144.0"

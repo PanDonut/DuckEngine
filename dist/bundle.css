@@ -107,6 +107,105 @@ h1 {
     right: 0.625rem;
     bottom: 0.625rem;
 }
+
+.spinner {
+    width: 6.25rem;
+    height: 6.25rem;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%) scale(0.5);
+        -ms-transform: translate(-50%, -50%) scale(0.5);
+            transform: translate(-50%, -50%) scale(0.5);
+    background-repeat: no-repeat;
+    background-size: calc(16 * 6.25rem) 6.25rem;
+    background-position: 0 center;
+    -ms-interpolation-mode: nearest-neighbor;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: -o-pixelated;
+        image-rendering: pixelated;
+    -webkit-animation: spinner 0.5s infinite steps(16);
+            animation: spinner 0.5s infinite steps(16);
+}
+
+@-webkit-keyframes spinner {
+    from {
+        background-position: 0 center;
+    }
+    to {
+        background-position: -100rem center;
+    }
+}
+
+@keyframes spinner {
+    from {
+        background-position: 0 center;
+    }
+    to {
+        background-position: -100rem center;
+    }
+}
+
+.LoadScreen {
+    -webkit-animation: GoInOp ease 2s;
+            animation: GoInOp ease 2s;
+}
+
+@-webkit-keyframes GoInOp {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes GoInOp {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes GoInOpSc {
+    from {
+        opacity: 0;
+        -webkit-transform: scale(1.1);
+                transform: scale(1.1);
+    }
+    to {
+        opacity: 1;
+        -webkit-transform: scale(1.0);
+                transform: scale(1.0);
+    }
+}
+
+@keyframes GoInOpSc {
+    from {
+        opacity: 0;
+        -webkit-transform: scale(1.1);
+                transform: scale(1.1);
+    }
+    to {
+        opacity: 1;
+        -webkit-transform: scale(1.0);
+                transform: scale(1.0);
+    }
+}
+
+.MainMenu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    -webkit-animation: GoInOpSc ease 2s;
+            animation: GoInOpSc ease 2s;
+    z-index: 2;
+    background-color: #000;
+}
 * {
     font-family: 'Ubuntu', sans-serif;
 }

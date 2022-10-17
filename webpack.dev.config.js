@@ -40,7 +40,7 @@ module.exports = {
         include: defaultInclude
       },
       {
-        test: /\.(glb|gltf|hdr|vox)$/,
+        test: /\.(glb|gltf|hdr|vox|mp3)$/,
         use: [{ loader: 'file-loader' }],
         include: defaultInclude
       }

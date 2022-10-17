@@ -38,16 +38,6 @@ export default function Game() {
         }
     }, [])
 
-    useEffect(() => {
-        window.ongamelogin = () => {
-            console.log("gamelogin event")
-        }
-        window.ongamestart = () => {
-            console.log("gamestart event")
-        }
-
-    }, [])
-
     // useEffect(() => {
     //     window.addEventListener("click", () => {
     //       const raycaster = new Raycaster();
@@ -71,6 +61,7 @@ export default function Game() {
 
     return (
             socketClient && (
+            <>
               <Canvas ref={CanvasRef} className='GameViewport'>
                   <Stats />
                   <Physics
@@ -122,6 +113,12 @@ export default function Game() {
                           )
                       })}
               </Canvas>
+              <div className='cel'/>           
+              <div className='UIAmmo'>
+                <h2>{window.PrimaryClip}</h2>
+                <h3>{window.PrimaryAmmo}</h3>
+              </div>
+            </>
           )
     )
 }

@@ -7,6 +7,7 @@ import { GetLoginData } from './Engine/EngineData/Accounts';
 import { Start } from './Engine/EngineData/Splash';
 import OfflineLogon from './Engine/EngineData/Accounts/OfflineLogon';
 
+window.location.hash = "";
 // Since we are using HtmlWebpackPlugin WITHOUT a template, we should create our own root node in the body element before rendering into it
 let root = document.createElement('div')
 
@@ -22,6 +23,13 @@ setTimeout(() => {
     OfflineLogon();
     if (GetLoginData() != null) Start();
 }, 1000)
+
+window.ongamelogin = () => {
+    console.log("gamelogin event")
+}
+window.ongamestart = () => {
+    console.log("gamestart event")
+}
 
 window.addEventListener(
     'beforeunload',

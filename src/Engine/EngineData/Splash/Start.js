@@ -7,9 +7,11 @@ function Start() {
     const SplashVid = document.createElement('video');
     SplashVid.className = "SplashVid";
     SplashVid.src = vid;
-    SplashVid.playbackRate = 60;
+    SplashVid.playbackRate = 10;
     SplashVid.autoplay = "true";
     SplashVid.onended = () => {
+        window.location.hash = "#mainmenu"
+        window.forceUpdate();
         document.body.removeChild(SplashVid);
         const event = new Event('onGameStart');
         window.ongamestart();
