@@ -31,6 +31,10 @@ window.ongamestart = () => {
     console.log("gamestart event")
 }
 
+if (localStorage.getItem("setting.pixelScale") == null) {
+    localStorage.setItem("setting.pixelScale", 5)
+}
+
 window.addEventListener(
     'beforeunload',
     function(e){

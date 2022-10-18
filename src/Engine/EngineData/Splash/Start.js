@@ -11,11 +11,8 @@ function Start() {
     SplashVid.autoplay = "true";
     SplashVid.onended = () => {
         window.location.hash = "#mainmenu"
-        window.forceUpdate();
         document.body.removeChild(SplashVid);
-        const event = new Event('onGameStart');
-        window.ongamestart();
-        window.dispatchEvent(event)
+        window.forceUpdate();
     }
     document.body.appendChild(SplashVid);
 }

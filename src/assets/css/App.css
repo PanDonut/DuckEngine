@@ -2,6 +2,11 @@
 
 @import '_example/_example.css';
 
+@font-face {
+    font-family: 'MyWebFont';
+    src: url('./pixel.ttf')  format('truetype'),
+}
+
 .cel {
     position: fixed;
     top: 50%;
@@ -75,4 +80,22 @@
     animation: GoInOpSc ease 2s;
     z-index: 2;
     background-color: #000;
+}
+
+.MenuButtons {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 300px;
+    z-index: 3;
+}
+
+.MenuButtons button {
+    width: 200px;
+    height: 50px;
+    background-color: #e2e2e2;
+    border: solid 5px #cacaca;
+    font-family: 'MyWebFont';
+    font-size: 20px;
 }
