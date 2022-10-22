@@ -2,9 +2,16 @@
 
 @import '_example/_example.css';
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500;1,700&display=swap');
+
 @font-face {
-    font-family: 'MyWebFont';
-    src: url('./pixel.ttf')  format('truetype'),
+    font-family: 'VOM';
+    src: url(https://raw.githubusercontent.com/PanDonut/DuckEngine/main/src/assets/css/VCR_OSD_MONO_1.001.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Pixel';
+    src: url(https://raw.githubusercontent.com/PanDonut/DuckEngine/main/src/assets/css/Minecraft.woff) format("woff");
 }
 
 .cel {
@@ -16,12 +23,23 @@
     height: 10px;
     border-radius: 50%;
     background-color: #fff;
+    z-index: 7;
 }
 
 .UIAmmo {
     position: fixed;
     right: 10px;
     bottom: 10px;
+    z-index: 7;
+}
+
+.Representation_3D {
+    position: fixed;
+    z-index: 7;
+    left: 0px;
+    bottom: 0px;
+    width: 200px;
+    height: 200px;
 }
 
 .spinner {
@@ -82,20 +100,146 @@
     background-color: #000;
 }
 
-.MenuButtons {
+.BG {
+    background: rgb(0,0,0);
+    background: radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
     position: fixed;
+    z-index: 4;
     top: 0;
     left: 0;
-    width: 200px;
+    width: 100vw;
+    height: 100vh;
+    animation: BG 0.5s ease;
+}
+
+@keyframes BG {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes BG1 {
+    0% {
+        opacity: 0;
+    }
+    20% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.Settings {
+    animation: BG1 0.7s ease;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50vw;
+    height: 70vh;
+    background-color: #191919;
+    z-index: 5;
+}
+
+.MenuButtons {
+    position: fixed;
+    top: 150px;
+    left: 200px;
+    width: 230px;
     height: 300px;
     z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .MenuButtons button {
-    width: 200px;
-    height: 50px;
-    background-color: #e2e2e2;
-    border: solid 5px #cacaca;
-    font-family: 'MyWebFont';
-    font-size: 20px;
+    width: 230px;
+    height: 60px;
+    background-color: #d3d3d3;
+    border: solid 5px #acacac;
+    font-family: 'Pixel', sans-serif;
+    font-size: 22px;
+}
+
+button:focus {
+    outline: none;
+}
+
+.PlayMenu {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 60vw;
+    height: 55vh;
+    background-color: #191919;
+    z-index: 5;
+    animation: BG1 0.7s ease;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    min-height: 420px;
+}
+
+.PlayMenu .PlayMenuSelect {
+    display: grid;
+    grid-template-rows: 230px 50px 50px 50px;
+}
+
+.PlayMenuSelect h2 {
+    font-family: 'Pixel';
+    font-size: 18px;
+    font-weight: 500;
+    width: 230px;
+    text-align: center;
+}
+
+.PlayMenu .PlayMenuSelect img {
+    width: 230px;
+    height: 230px;
+    object-fit: cover;
+}
+
+.GameViewport {
+    z-index: 6;
+}
+
+.LoadScreen {
+    z-index: 1;
+    position: fixed;
+}
+
+.Settings {
+    padding: 10px;
+}
+
+.SettingsLine {
+    display: grid;
+    grid-template-columns: calc(90% - 100px) 100px;
+    justify-content: center
+}
+
+.TF {
+    display: flex;
+    width: 70px;
+    object-fit: contain;
+    position: relative;
+    align-items: center;
+}
+
+.TF img {
+    object-fit: contain;
+    image-rendering: pixelated;
+    position: relative;
+    width: 70px;
+}
+
+.TF img:last-child {
+    position: absolute;
+    width: 70px;
+    transition: 1s ease;
 }

@@ -8,6 +8,7 @@ import Start from './start';
 import { io } from 'socket.io-client'
 import { useState, useEffect } from 'react';
 import { softShadows } from '@react-three/drei';
+import Vid from '../Engine/EngineData/Splash/splashintro.mp4';
 
 function App() {
 
@@ -47,7 +48,11 @@ function App() {
       <MainMenu/>
       :
       ''
-      }    
+      }
+      <video onLoadedMetadata={(e) => {document.getElementsByClassName("SplashVid")[0].playbackRate = 10}} className='SplashVid' autoPlay src={Vid} onEnded={() => {
+        window.location.hash = "#mainmenu"
+        window.forceUpdate();
+      }}/>    
     </>
   )
 }

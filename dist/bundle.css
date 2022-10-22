@@ -1,8 +1,9 @@
+@import url(https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500;1,700&display=swap);
 @import url(https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap);
+
+
 /* Main CSS file */
-
 /* Example stylesheet */
-
 @media screen and (color-index: 70), screen and (color-index: 22) {
   /* Light theme */
   body{
@@ -10,7 +11,6 @@
     background-color: #fff;
   }
 }
-
 @media screen and (color-index: 70), screen and (color: 22511989) {
   /* Light theme */
   body{
@@ -18,7 +18,6 @@
     background-color: #fff;
   }
 }
-
 @media screen and (color-index: 70), screen and (prefers-color-scheme: no-preference) {
   /* Light theme */
   body{
@@ -26,7 +25,6 @@
     background-color: #fff;
   }
 }
-
 @media screen and (color: 70318723), screen and (color-index: 22) {
   /* Light theme */
   body{
@@ -34,7 +32,6 @@
     background-color: #fff;
   }
 }
-
 @media screen and (color: 70318723), screen and (color: 22511989) {
   /* Light theme */
   body{
@@ -42,7 +39,6 @@
     background-color: #fff;
   }
 }
-
 @media screen and (color: 70318723), screen and (prefers-color-scheme: no-preference) {
   /* Light theme */
   body{
@@ -50,7 +46,6 @@
     background-color: #fff;
   }
 }
-
 @media screen and (prefers-color-scheme: light), screen and (prefers-color-scheme: no-preference) {
   /* Light theme */
   body{
@@ -58,7 +53,6 @@
     background-color: #fff;
   }
 }
-
 @media screen and (color-index: 48) {
   /* Dark theme */
   body {
@@ -66,7 +60,6 @@
     background-color: #000;
   }
 }
-
 @media screen and (color: 48842621) {
   /* Dark theme */
   body {
@@ -74,7 +67,6 @@
     background-color: #000;
   }
 }
-
 @media screen and (prefers-color-scheme: dark) {
   /* Dark theme */
   body {
@@ -82,13 +74,19 @@
     background-color: #000;
   }
 }
-
 h1 {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 1.3125rem;
   font-weight: 200;
 }
-
+@font-face {
+    font-family: 'VOM';
+    src: url(https://raw.githubusercontent.com/PanDonut/DuckEngine/main/src/assets/css/VCR_OSD_MONO_1.001.woff) format('woff');
+}
+@font-face {
+    font-family: 'Pixel';
+    src: url(https://raw.githubusercontent.com/PanDonut/DuckEngine/main/src/assets/css/Minecraft.woff) format("woff");
+}
 .cel {
     position: fixed;
     top: 50%;
@@ -100,14 +98,22 @@ h1 {
     height: 0.625rem;
     border-radius: 50%;
     background-color: #fff;
+    z-index: 7;
 }
-
 .UIAmmo {
     position: fixed;
     right: 0.625rem;
     bottom: 0.625rem;
+    z-index: 7;
 }
-
+.Representation_3D {
+    position: fixed;
+    z-index: 7;
+    left: 0;
+    bottom: 0;
+    width: 12.5rem;
+    height: 12.5rem;
+}
 .spinner {
     width: 6.25rem;
     height: 6.25rem;
@@ -127,7 +133,6 @@ h1 {
     -webkit-animation: spinner 0.5s infinite steps(16);
             animation: spinner 0.5s infinite steps(16);
 }
-
 @-webkit-keyframes spinner {
     from {
         background-position: 0 center;
@@ -136,7 +141,6 @@ h1 {
         background-position: -100rem center;
     }
 }
-
 @keyframes spinner {
     from {
         background-position: 0 center;
@@ -145,12 +149,10 @@ h1 {
         background-position: -100rem center;
     }
 }
-
 .LoadScreen {
     -webkit-animation: GoInOp ease 2s;
             animation: GoInOp ease 2s;
 }
-
 @-webkit-keyframes GoInOp {
     from {
         opacity: 0;
@@ -159,7 +161,6 @@ h1 {
         opacity: 1;
     }
 }
-
 @keyframes GoInOp {
     from {
         opacity: 0;
@@ -168,7 +169,6 @@ h1 {
         opacity: 1;
     }
 }
-
 @-webkit-keyframes GoInOpSc {
     from {
         opacity: 0;
@@ -181,7 +181,6 @@ h1 {
                 transform: scale(1.0);
     }
 }
-
 @keyframes GoInOpSc {
     from {
         opacity: 0;
@@ -194,7 +193,6 @@ h1 {
                 transform: scale(1.0);
     }
 }
-
 .MainMenu {
     position: fixed;
     top: 0;
@@ -205,6 +203,185 @@ h1 {
             animation: GoInOpSc ease 2s;
     z-index: 2;
     background-color: #000;
+}
+.BG {
+    background: rgb(0,0,0);
+    background: -o-radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
+    background: radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
+    position: fixed;
+    z-index: 4;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    -webkit-animation: BG 0.5s ease;
+            animation: BG 0.5s ease;
+}
+@-webkit-keyframes BG {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes BG {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@-webkit-keyframes BG1 {
+    0% {
+        opacity: 0;
+    }
+    20% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes BG1 {
+    0% {
+        opacity: 0;
+    }
+    20% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+.Settings {
+    -webkit-animation: BG1 0.7s ease;
+            animation: BG1 0.7s ease;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    width: 50vw;
+    height: 70vh;
+    background-color: #191919;
+    z-index: 5;
+}
+.MenuButtons {
+    position: fixed;
+    top: 9.375rem;
+    left: 12.5rem;
+    width: 14.375rem;
+    height: 18.75rem;
+    z-index: 3;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    gap: 0.625rem;
+}
+.MenuButtons button {
+    width: 14.375rem;
+    height: 3.75rem;
+    background-color: #d3d3d3;
+    border: solid 0.3125rem #acacac;
+    font-family: 'Pixel', sans-serif;
+    font-size: 1.375rem;
+}
+button:focus {
+    outline: none;
+}
+.PlayMenu {
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    width: 60vw;
+    height: 55vh;
+    background-color: #191919;
+    z-index: 5;
+    -webkit-animation: BG1 0.7s ease;
+            animation: BG1 0.7s ease;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-pack: space-evenly;
+        -ms-flex-pack: space-evenly;
+            justify-content: space-evenly;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    min-height: 26.25rem;
+}
+.PlayMenu .PlayMenuSelect {
+    display: grid;
+    grid-template-rows: 14.375rem 3.125rem 3.125rem 3.125rem;
+}
+.PlayMenuSelect h2 {
+    font-family: 'Pixel';
+    font-size: 1.125rem;
+    font-weight: 500;
+    width: 14.375rem;
+    text-align: center;
+}
+.PlayMenu .PlayMenuSelect img {
+    width: 14.375rem;
+    height: 14.375rem;
+    -o-object-fit: cover;
+       object-fit: cover;
+}
+.GameViewport {
+    z-index: 6;
+}
+.LoadScreen {
+    z-index: 1;
+    position: fixed;
+}
+.Settings {
+    padding: 0.625rem;
+}
+.SettingsLine {
+    display: grid;
+    grid-template-columns: calc(90% - 6.25rem) 6.25rem;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center
+}
+.TF {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    width: 4.375rem;
+    -o-object-fit: contain;
+       object-fit: contain;
+    position: relative;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+}
+.TF img {
+    -o-object-fit: contain;
+       object-fit: contain;
+    -ms-interpolation-mode: nearest-neighbor;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: -o-pixelated;
+        image-rendering: pixelated;
+    position: relative;
+    width: 4.375rem;
+}
+.TF img:last-child {
+    position: absolute;
+    width: 4.375rem;
+    -webkit-transition: 1s ease;
+    -o-transition: 1s ease;
+    transition: 1s ease;
 }
 * {
     font-family: 'Ubuntu', sans-serif;
@@ -236,6 +413,7 @@ h1 {
     -o-object-fit: contain;
        object-fit: contain;
     cursor: none;
+    z-index: 0;
 }
 
 body {

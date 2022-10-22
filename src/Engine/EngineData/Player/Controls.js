@@ -16,9 +16,9 @@ import Skybox from "../Graphics/Skybox"
 import Weapons, { WeaponList } from "./Weapons"
 import { ChangeState } from "./Animation/StateMachine"
 import { Matrix4 } from "three"
-import { Weapon } from "./Weapons/WeaponHitscan"
 
-export const ControlsWrapper = ({ socket }) => {
+
+export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAmmo, setPrimaryAmmo }) => {
     const [, forceUpdate] = useReducer((x) => x + 1, 0);
     const { camera, scene } = useThree();
 
@@ -87,6 +87,8 @@ export const ControlsWrapper = ({ socket }) => {
     const [Loadout, setLoadout] = useState([
       "bab", "aba", "daba"
     ]);
+
+    const [CanShoot, setCanShoot] = useState(false);
 
     /**
      * 
@@ -335,6 +337,8 @@ export const ControlsWrapper = ({ socket }) => {
         // onControlsChange(controlsRef.current.camera.position, controlsRef.current.camera.rotation)
       });
 
+      const [selW, setSelW] = useState(0);
+
       useEffect(() => {
         window.addEventListener("wheel", (e) => {
           console.log(e.deltaY)
@@ -351,19 +355,24 @@ export const ControlsWrapper = ({ socket }) => {
             selectedWeapon = 0
           }
           setLoadout(Loadout)
+          setSelW(selectedWeapon)
+          socket.emit('selW', selectedWeapon)
           console.log(selectedWeapon)
           forceUpdate();
+          window.GameUIUpdate()
           window.selectedWeapon = selectedWeapon;
         })
       }, [])
 
       useEffect(() => {
         console.log(selectedWeapon)
+        forceUpdate()
       }, [selectedWeapon])
 
       useEffect(() => {
+        console.log("Make_Weapons")
         window.PrimaryAmmo = WeaponList[Loadout[0]].ammoSize;
-        window.PrimaryClip =  WeaponList[Loadout[0]].clipSize;
+        window.PrimaryClip = WeaponList[Loadout[0]].clipSize;
 
         window.SecondaryAmmo = WeaponList[Loadout[1]].ammoSize;
         window.SecondaryClip =  WeaponList[Loadout[1]].clipSize;
@@ -375,25 +384,43 @@ export const ControlsWrapper = ({ socket }) => {
         window.forceUpdate();
       }, [])
 
+      function ReturnWeapon(Itm) {
+        return (
+          <Itm.ref PrimaryAmmo={window.PrimaryAmmo} setPrimaryAmmo={setPrimaryAmmo} PrimaryClip={window.PrimaryClip} setPrimaryClip={setPrimaryClip} state={astate} camera={camera} scene={scene} />
+        )
+      }
+
+      useEffect(() => {
+        socket.emit('loadout', Loadout)
+      }, [Loadout])
+
     return (
       <>
         <group>  
-          <PointerLockControls minPolarAngle={0.01} maxPolarAngle={3} ref={controlsRef} camera={camera} />       
+          <PointerLockControls minPolarAngle={0.01} maxPolarAngle={3} ref={controlsRef} camera={camera} />               
         </group> 
         <group ref={gr} scale={[0.1, 0.1, 0.1]} renderOrder={2}>
           <group ref={gro} position={[0.3, -0.3, 0]}>
             {
-              Loadout.map((item, index) => {               
-                if (index == selectedWeapon) {
-                  var Itm = WeaponList[item];
-                  return (
-                    <Itm.ref state={astate} camera={camera} scene={scene} />
-                  )
-                }
-              })
+              selW == 0 ?
+              ReturnWeapon(WeaponList[Loadout[0]])       
+              :
+              ''
+            }
+            {
+              selW == 1 ?
+              ReturnWeapon(WeaponList[Loadout[1]])       
+              :
+              ''
+            }
+            {
+              selW == 2 ?
+              ReturnWeapon(WeaponList[Loadout[2]])       
+              :
+              ''
             }
           </group>        
-        </group>
+        </group>        
       </>   
     )
 }

@@ -70,6 +70,14 @@ ioServer.on('connection', (client) => {
         clients[data.id].health = clients[data.id].health - data.dmg
     })
 
+    client.on("selW", (data) => {
+        clients[client.id].selW = data;
+    })
+
+    client.on("loadout", (data) => {
+        clients[client.id].loadout = data;
+    })
+
     //Add a new client indexed by his id
     // clients[client.id] = {
     //     position: [0, 0, 0],
@@ -83,6 +91,7 @@ ioServer.on('connection', (client) => {
             clients[id].position = position
             clients[id].rotation = rotation
         }
+        console.log(rotation)
 
         ioServer.sockets.emit('move', clients)
     })
