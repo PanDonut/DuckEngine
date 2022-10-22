@@ -3,6 +3,7 @@ import express, { json } from 'express'
 import Router from 'express-promise-router'
 import { Server } from 'socket.io'
 import config from './config.json'
+const cert = fs.readFileSync('./cert/CA.pem');
 
 // Create router
 const router = Router()
