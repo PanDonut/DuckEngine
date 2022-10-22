@@ -66,6 +66,10 @@ if (localStorage.getItem("setting.Vignette") == null) {
     localStorage.setItem("setting.Vignette", "true")
 }
 
+if (localStorage.getItem("setting.use3Dmodel") == null) {
+    localStorage.setItem("setting.use3Dmodel", "true")
+}
+
 window.addEventListener(
     'beforeunload',
     function(e){

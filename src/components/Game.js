@@ -101,7 +101,7 @@ export default function Game() {
         <>
         { socketClient ?
             <>
-              <Canvas ref={CanvasRef} onKeyUp={(e) => {window.RKey(e); if (e.key == "B") {}}} className='GameViewport' onClick={() => {window.ShootClick()}} dpr={(Math.min(window.devicePixelRatio), 2) / 12 * parseFloat(localStorage.getItem("setting.pixelScale"))} shadows={{autoUpdate: true, enabled:true, type: PCFSoftShadowMap}}>
+              <Canvas onFocus={() => {navigator.keyboard.lock()}} ref={CanvasRef} onKeyUp={(e) => {window.RKey(e); if (e.key == "B") {}}} className='GameViewport' onClick={() => {window.ShootClick()}} dpr={(Math.min(window.devicePixelRatio), 2) / 12 * parseFloat(localStorage.getItem("setting.pixelScale"))} shadows={{autoUpdate: true, enabled:true, type: PCFSoftShadowMap}}>
                   {/* <Stats /> */}
                   <Physics
                     gravity={[0, -9, 0]}
@@ -181,6 +181,8 @@ export default function Game() {
                   />
                 </EffectComposer> */}
               </Canvas>  
+              {
+              localStorage.getItem("use3Dmodel") != "false" ?
               <div className="Representation_3D">
                 { socketClient && clients[socketClient.id] ?
                 <Canvas dpr={1}>
@@ -197,6 +199,9 @@ export default function Game() {
                 ''
                 }
               </div>
+              :
+              ''
+              }
               <GameUI/>          
         </>
         :
