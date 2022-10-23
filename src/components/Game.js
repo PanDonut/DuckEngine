@@ -115,7 +115,11 @@ export default function Game() {
         create: (type, position) => {
             const sound = document.createElement("audio");
             sound.src = Sounds[type].url;
-            sound.volume = 1;
+            const playerPos = new Vector3().fromArray(window.CameraPosition)
+            const distance = playerPos.distanceTo(new Vector3().fromArray(position))
+            console.log("distance", distance)
+            const vol = 1 - clamp(distance, 0, Sounds[type].range, 0, 1);
+            sound.volume = vol >= 0 ? vol : 0;
             document.body.appendChild(sound);
             sound.play();
             sound.onended = () => {
