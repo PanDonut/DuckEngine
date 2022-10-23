@@ -70,6 +70,10 @@ if (localStorage.getItem("setting.use3Dmodel") == null) {
     localStorage.setItem("setting.use3Dmodel", "true")
 }
 
+if (localStorage.getItem("setting.csOP") == null) {
+    localStorage.setItem("setting.csOP", 1)
+}
+
 window.addEventListener(
     'beforeunload',
     function(e){

@@ -49,7 +49,7 @@ function App() {
       :
       ''
       }
-      <video onLoadedMetadata={(e) => {document.getElementsByClassName("SplashVid")[0].playbackRate = 10}} className='SplashVid' autoPlay src={Vid} onEnded={() => {
+      <video onLoadedData={(e) => {document.getElementsByClassName("SplashVid")[0].playbackRate = 10; document.getElementsByClassName("SplashVid")[0].play()}} className='SplashVid' src={Vid} onEnded={() => {
         window.location.hash = "#mainmenu"
         window.forceUpdate();
       }}/>    

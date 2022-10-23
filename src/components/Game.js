@@ -15,11 +15,21 @@ import { DefMap } from "../Engine/EngineData/Maps/defmap";
 import { Cube } from "../Engine/EngineData/Components/Cube.js";
 import { Plane } from "../Engine/EngineData/Components/Plane";
 import { Raycaster } from "three";
+import THREE from "three";
 import { EffectComposer, DepthOfField, Bloom, Noise, Vignette, GodRays, SSAO, SMAA } from '@react-three/postprocessing'
 import { BlendFunction, Resizer, KernelSize } from "postprocessing";
 import { Fog, PCFSoftShadowMap, WebGLRenderer } from 'three';
 import LR from '../Engine/EngineData/Player/BaseAssets/LightRay.gltf'
 import { useReducer } from "react";
+import { getCrosshairData } from "./Globals";
+import { extend} from 'react-three-fiber'
+import { AudioLoader, AudioListener } from "three"
+import ShootSound from '../Engine/EngineData/Player/Weapons/Assets/Shotgun/shotgun_shoot.wav'
+import Sounds from "../Engine/EngineData/sounds";
+import { Vector3 } from "three";
+import { clamp } from "../Engine/EngineData/Functions";
+
+var AudioList = [];
 
 export default function Game() {
     var bSunset = [Sunset]
@@ -59,6 +69,7 @@ export default function Game() {
     //     })
     //   }, [])
 
+
     useEffect(() => {
         if (socketClient) {
             socketClient.on('move', (clients) => {
@@ -68,7 +79,7 @@ export default function Game() {
             socketClient.on("connect", () => {
                 console.log("CON!")
                 socketClient.emit("UserData", JSON.stringify(userD))
-            })
+            })           
             socketClient.on("disconnect", () => {
                 console.log("disconnect")
             })
@@ -83,6 +94,9 @@ export default function Game() {
                 // window.location.search = `?err=${err.message}`
                 // window.forceUpdate();
             });
+            socketClient.on("audio", (data) => {
+                AudioManager.create(data.type, data.position);
+            })
         }
     }, [socketClient])
 
@@ -96,6 +110,28 @@ export default function Game() {
           document.removeEventListener('keyup', handleKeyUp)
         }
     }, [])
+
+    const AudioManager = {
+        create: (type, position) => {
+            const sound = document.createElement("audio");
+            sound.src = Sounds[type].url;
+            sound.volume = 1;
+            document.body.appendChild(sound);
+            sound.play();
+            sound.onended = () => {
+                document.body.removeChild(sound)
+            }
+            sound.ontimeupdate = () => {
+                const playerPos = new Vector3().fromArray(window.CameraPosition)
+                const distance = playerPos.distanceTo(new Vector3().fromArray(position))
+                console.log("distance", distance)
+                const vol = 1 - clamp(distance, 0, Sounds[type].range, 0, 1);
+                sound.volume = vol >= 0 ? vol : 0;
+                console.log("Movement, Changing volume of " + type + " to " + (1 - clamp(distance, 0, Sounds[type].range, 0, 1)))
+            }
+            console.log("Audio Created")
+        }   
+    }
 
     return (
         <>
@@ -130,7 +166,7 @@ export default function Game() {
                   <Environment background={true} files={Sunset} />
                   {/* <gridHelper rotation={[0, 0, 0]} position={[0,0,0]} /> */}
                   <ambientLight intensity={0} rotation={[0,1,0]} />
-                  <directionalLight intensity={1}/>
+                  <directionalLight castShadow intensity={1}/>
                   {/* <primitive object={gltf.scene} position={[0,10,0]} /> */}
                   {/* <spotLight intensity={1} position={[0,10,0]} angle={0.1} /> */}
 
@@ -221,7 +257,16 @@ function GameUI() {
     }, [])
     return (
         <>
-            <div className='cel'/>           
+            <div className='cel' style={{opacity: parseFloat(localStorage.getItem("setting.csOP")) / 10}}/>  
+            {
+                getCrosshairData().type == "horizontal_D" ?
+                <div className="H" style={{width: `${getCrosshairData().range}px`, opacity: parseFloat(localStorage.getItem("setting.csOP")) / 10}}>
+                    <div/>
+                    <div/>
+                </div>
+                :
+                ''
+            }         
             <div className='UIAmmo'>
                 <h2 className="ClipCount">{0}</h2>
                 <h3 className="AmmoCount">{0}</h3>          

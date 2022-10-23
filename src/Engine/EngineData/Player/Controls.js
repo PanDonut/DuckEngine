@@ -3,6 +3,7 @@ import React, { useEffect } from "react"
 import { useState } from "react"
 import { useRef } from "react"
 import { BoxGeometry, MeshNormalMaterial } from "three"
+import { AudioListener } from "three"
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import DefMap from '../Maps/mapdef.gltf'
 import { useFrame, useLoader, useThree } from '@react-three/fiber'
@@ -16,9 +17,12 @@ import Skybox from "../Graphics/Skybox"
 import Weapons, { WeaponList } from "./Weapons"
 import { ChangeState } from "./Animation/StateMachine"
 import { Matrix4 } from "three"
+import { Canvas, extend} from 'react-three-fiber'
+import { AudioLoader } from "three"
 
 
 export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAmmo, setPrimaryAmmo }) => {
+
     const [, forceUpdate] = useReducer((x) => x + 1, 0);
     const { camera, scene } = useThree();
 
@@ -279,6 +283,7 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
           height + sphereRef.current.position.y,
           sphereRef.current.position.z
         );
+        window.CameraPosition =sphereRef.current.position.toArray();
         // gr.current.position.set(
         //   sphereRef.current.position.x,
         //   height + sphereRef.current.position.y,

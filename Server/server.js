@@ -79,6 +79,11 @@ ioServer.on('connection', (client) => {
         clients[client.id].loadout = data;
     })
 
+    client.on("audioEmit", (data) => {
+        console.log(data)
+        ioServer.emit("audio", data)
+    })
+
     //Add a new client indexed by his id
     // clients[client.id] = {
     //     position: [0, 0, 0],
@@ -92,7 +97,6 @@ ioServer.on('connection', (client) => {
             clients[id].position = position
             clients[id].rotation = rotation
         }
-        console.log(rotation)
 
         ioServer.sockets.emit('move', clients)
     })
