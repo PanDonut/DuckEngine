@@ -413,6 +413,249 @@ button:focus {
     border-right: 0.3125rem solid #fff;
     border-radius: 1.25rem;
 }
+.ExtenstionInstaller {
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    -webkit-backdrop-filter: blur(0.3125rem);
+            backdrop-filter: blur(0.3125rem);
+  }
+.ExtenstionView {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    width: 65vw;
+    height: 80vh;
+    background-color: #eee;
+    border-radius: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    overflow: hidden;
+    -ms-flex-negative: 0;
+        flex-shrink: 0;
+  }
+.ViewObject {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 65vw;
+    height: 100%;
+    -ms-flex-negative: 0;
+        flex-shrink: 0;
+    -webkit-transition: 0.25s ease;
+    -o-transition: 0.25s ease;
+    transition: 0.25s ease;
+  }
+.ViewObject svg {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    height: 40vh;
+    width: 40vh;
+  }
+.ExtenstionButtonLine {
+    position: absolute;
+    bottom: 0.625rem;
+    left: 3%;
+    width: 94%;
+    height: 1.875rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+  }
+.file-input {
+    display: inline-block;
+    text-align: left;
+    background: transparent;
+    height: 60vh;
+    width: 50vw;
+    position: absolute;
+    border-radius: 0.1875rem;
+    top: 45%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+  }
+.file-input > [type='file'] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 10;
+    cursor: pointer;
+  }
+.file-input > .button {
+    display: inline-block;
+    cursor: pointer;
+    background: transparent;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    margin-right: 0.5rem;
+    width: 100%;
+    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-transition: 0.5s ease;
+    -o-transition: 0.5s ease;
+    transition: 0.5s ease;
+    background: -webkit-gradient(linear, left top, right top, color-stop(50%, #ddd), color-stop(50%, transparent)), -webkit-gradient(linear, left top, right top, color-stop(50%, #ddd), color-stop(50%, transparent)), -webkit-gradient(linear, left bottom, left top, color-stop(50%, #ddd), color-stop(50%, transparent)), -webkit-gradient(linear, left bottom, left top, color-stop(50%, #ddd), color-stop(50%, transparent));
+    background: -o-linear-gradient(left, #ddd 50%, transparent 50%), -o-linear-gradient(left, #ddd 50%, transparent 50%), -o-linear-gradient(bottom, #ddd 50%, transparent 50%), -o-linear-gradient(bottom, #ddd 50%, transparent 50%);
+    background: linear-gradient(90deg, #ddd 50%, transparent 50%), linear-gradient(90deg, #ddd 50%, transparent 50%), linear-gradient(0deg, #ddd 50%, transparent 50%), linear-gradient(0deg, #ddd 50%, transparent 50%);
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: 1rem 0.25rem, 1rem 0.25rem, 0.25rem 1rem, 0.25rem 1rem;
+    background-position: 0% 0%, 100% 100%, 0% 100%, 100% 0;
+  }
+.file-input:hover > .button {
+    color: black;
+    -webkit-animation: dash 5s linear infinite;
+            animation: dash 5s linear infinite;
+  }
+.file-input:-moz-drag-over > .button {
+    color: black;
+    animation: dash 5s linear infinite;
+  }
+.file-input > .label {
+    color: #333;
+    white-space: nowrap;
+    opacity: .3;
+  }
+.file-input.-chosen > .label {
+    opacity: 1;
+  }
+@-webkit-keyframes dash {
+    to {
+        background-position: 100% 0%, 0% 100%, 0% 0%, 100% 100%;
+    }
+  }
+@keyframes dash {
+    to {
+        background-position: 100% 0%, 0% 100%, 0% 0%, 100% 100%;
+    }
+  }
+.InstallText {
+    left: 50%;
+    top: 70%;
+    -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    position: absolute;
+  }
+.cls-1 {
+    fill:none;
+  }
+#installing:hover {
+    cursor: wait;
+  }
+.PluginList {
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    width: 50vw;
+    height: 70vh;
+    background-color: #191919;
+    overflow-y: auto;
+    z-index: 5;
+    -webkit-animation: BG1 0.7s ease;
+            animation: BG1 0.7s ease;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -ms-flex-negative: 0;
+        flex-shrink: 0;
+    position: absolute;
+    gap: 1.25rem;
+  }
+.PluginItem {
+    width: 100%;
+    height: 4.375rem;
+    background-color: transparent;
+    border-radius: 0.6875rem;
+    position: relative;
+    color: #fff;
+  }
+.PluginItem img {
+    position: absolute;
+    height: 3.125rem;
+    width: 3.125rem;
+    left: 0.625rem;
+    top: 0.625rem;
+    -o-object-fit: cover;
+       object-fit: cover;
+    border-radius: 0.625rem;
+    border: none;
+  }
+.PluginItem h3 {
+    position: absolute;
+    font-weight: 500;
+    font-size: 1.0625rem;
+    left: 4.5rem;
+    top: 0.875rem;
+    margin: 0;
+  }
+.PluginItem h4 {
+    position: absolute;
+    color: #777;
+    left: 4.5rem;
+    top: 2.1875rem;
+    margin: 0;
+  }
+.PluginItem h5 {
+    position: absolute;
+    color: #444;
+    right: 5.75rem;
+    top: 1.5625rem;
+    margin: 0;
+    font-weight: 500;
+  }
+.PluginItem button {
+    position: absolute;
+    color: #444;
+    right: 0.8125rem;
+    top: 1.3125rem;
+    margin: 0;
+    font-weight: 500;
+    border: none;
+    background-color: var(--brand);
+    color: #fff;
+    border-radius: 0.375rem;
+    height: 1.875rem;
+    width: 3.75rem;
+  }
+@font-face {
+    font-family: 'Native';
+    src: url(https://raw.githubusercontent.com/PanDonut/DuckEngine/main/src/assets/css/MS%20Sans%20Serif%208pt.woff2) format("woff2");
+}
+
 * {
     font-family: 'Ubuntu', sans-serif;
 }
@@ -470,3 +713,106 @@ body {
     width: 100%;
     height: 100%;
 }
+
+.NativeWindow {
+    background:#c0c0c0;
+    border:0.0625rem solid black;
+    border-color:#dfdfdf black black #dfdfdf;
+    position:relative;
+    font-family: "MS Sans-Serif", Tahoma, sans-serif;
+}
+
+.NativeWindow * {
+    font-family: "Native";
+    /* font-size:10px;
+    font-weight:bold;
+    font-smooth: never; */
+    color: #000;
+    -webkit-transition: none;
+    -o-transition: none;
+    transition: none;
+}
+
+.NativeWindow button {
+    padding-left:0.4375rem;
+    padding-right:0.4375rem;
+    overflow:hidden;
+    background:#c0c0c0;
+    border:0.0625rem solid green;
+    border-color: white black black white;
+}
+
+.NativeWindow button:active {
+    border:0 solid green;
+    border-color: white black black white;
+}
+
+.NativeWindow:before {
+    content:"";
+    display: block;
+    position: absolute;
+    left:0;
+    top:0;
+    right:0;
+    bottom:0;
+    border:0.0625rem solid green;
+    border-color: white #808080 #808080 white;      
+}
+
+.NativeWindow .h2{
+    font-family: "MS Sans-Serif", Tahoma, sans-serif;
+    font-size:0.625rem;
+    font-weight:bold;
+    background:-webkit-gradient(linear, left top, right top, from(#000080), to(#1084d0));
+    background:-o-linear-gradient(left, #000080, #1084d0);
+    background:linear-gradient(to right, #000080, #1084d0);
+    position:absolute;
+    left:0.1875rem;
+    top:0.1875rem;
+    right:0.1875rem;
+    margin:0;
+    padding:0;
+    line-height:1.125rem;
+    color:white;
+    padding-left:0.1875rem;
+  }
+
+.close{
+    position:absolute;
+    right:0.125rem;
+    top:0.125rem;
+    height:0.875rem;
+    width:0;
+    padding-left:0.875rem;
+    overflow:hidden;
+    background:#c0c0c0;
+    border:0.0625rem solid green;
+    border-color: white black black white;
+    -webkit-box-sizing:border-box;
+            box-sizing:border-box;   
+  }
+
+.close:before{
+    content:"";
+    display: block;
+    position: absolute;
+    left:0;
+    top:0;
+    right:0;
+    bottom:0;
+    border:0.0625rem solid green;
+    border-color: #dfdfdf #808080 #808080 #dfdfdf;
+  }
+
+.close:after{
+    content: "×";
+    position:absolute;
+    left:0;
+    width:calc(100%);
+    text-align: center;
+    top:50%;
+    color:black;
+    background:pink;
+    line-height:0;
+    margin-top:-0.0625rem;
+  }

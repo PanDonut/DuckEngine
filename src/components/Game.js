@@ -28,6 +28,7 @@ import ShootSound from '../Engine/EngineData/Player/Weapons/Assets/Shotgun/shotg
 import Sounds from "../Engine/EngineData/sounds";
 import { Vector3 } from "three";
 import { clamp } from "../Engine/EngineData/Functions";
+import { ChangeState } from "../Engine/EngineData/Player/Animation/StateMachine";
 
 var AudioList = [];
 
@@ -74,14 +75,19 @@ export default function Game() {
         if (socketClient) {
             socketClient.on('move', (clients) => {
                 setClients(clients)
+                window.health = clients[socketClient.id].health;
+                // console.log(clients)
+                // if (clients[socketClient.id].health <= 0) {
+                //     ChangeState("dead")
+                // }
             })
             const userD = {name: localStorage.getItem("name"), uid: localStorage.getItem("uid")};
             socketClient.on("connect", () => {
                 console.log("CON!")
                 socketClient.emit("UserData", JSON.stringify(userD))
             })           
-            socketClient.on("disconnect", () => {
-                console.log("disconnect")
+            socketClient.on("disconnect", (e) => {
+                console.log("disconnect", e)
             })
             socketClient.on("connect_error", (err) => {
                 console.log(`connect_error due to ${err.message}`);
@@ -137,11 +143,41 @@ export default function Game() {
         }   
     }
 
+    var mouseDown = false;
+
+    function Fire() {
+        if (mouseDown == true) {
+            window.ClickAnim();
+            window.ShootClick()
+        }
+    }
+
+    useEffect(() => {
+        setInterval(() => {
+            console.log(mouseDown)        
+            Fire();
+        }, 30)
+        const handleDown = (e) => {
+            mouseDown = true;
+            console.log("DOWN")
+          }
+          const handleUp = (e) => {
+            mouseDown = false;
+            console.log("UP")
+          }
+          document.addEventListener('mousedown', handleDown)
+          document.addEventListener('mouseup', handleUp)
+          return () => {
+            document.removeEventListener('mousedown', handleDown)
+            document.removeEventListener('mouseup', handleUp)
+          }
+    }, [])
+
     return (
         <>
         { socketClient ?
             <>
-              <Canvas onFocus={() => {navigator.keyboard.lock()}} ref={CanvasRef} onKeyUp={(e) => {window.RKey(e); if (e.key == "B") {}}} className='GameViewport' onClick={() => {window.ShootClick()}} dpr={(Math.min(window.devicePixelRatio), 2) / 12 * parseFloat(localStorage.getItem("setting.pixelScale"))} shadows={{autoUpdate: true, enabled:true, type: PCFSoftShadowMap}}>
+              <Canvas onFocus={() => {navigator.keyboard.lock()}} ref={CanvasRef} onKeyUp={(e) => {window.RKey(e); if (e.key == "B") {}}} className='GameViewport' onClick={() => {}} dpr={(Math.min(window.devicePixelRatio), 2) / 12 * parseFloat(localStorage.getItem("setting.pixelScale"))} shadows={{autoUpdate: true, enabled:true, type: PCFSoftShadowMap}}>
                   {/* <Stats /> */}
                   <Physics
                     gravity={[0, -9, 0]}
@@ -149,7 +185,7 @@ export default function Game() {
                     iterations={50}
                     broadphase={"SAP"}
                 >
-                    <ControlsWrapper socket={socketClient} />
+                    <ControlsWrapper socket={socketClient} id={socketClient.id} />
                     {/* <DefMap/>  */}
                     <Plane />
                     <Cube position={[0, 0, -5]} layers={1} />
@@ -185,6 +221,7 @@ export default function Game() {
                                   position={position}
                                   rotation={rotation}
                                   animState={clients[client].state}
+                                  weaponState={clients[client].WState}
                               />
                           )
                       })}

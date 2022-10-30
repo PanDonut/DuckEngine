@@ -66,6 +66,10 @@ ioServer.on('connection', (client) => {
         clients[client.id].state = state;
     })
 
+    client.on("weaponstate", (state) => {
+        clients[client.id].WState = state;
+    })
+
     client.on("dmg", (data) => {
         console.log(`(${data.id}) ${clients[data.id].name} took ${data.dmg} damage (now ${clients[data.id].health - data.dmg})`)
         clients[data.id].health = clients[data.id].health - data.dmg
@@ -90,7 +94,7 @@ ioServer.on('connection', (client) => {
     //     rotation: [0, 0, 0],
     // }
 
-    // ioServer.sockets.emit('move', clients)
+    ioServer.sockets.emit('move', clients)
 
     client.on('move', ({ id, rotation, position }) => {
         if (clients[id]) {

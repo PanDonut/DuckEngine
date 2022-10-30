@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 
+@font-face {
+    font-family: 'Native';
+    src: url(https://raw.githubusercontent.com/PanDonut/DuckEngine/main/src/assets/css/MS%20Sans%20Serif%208pt.woff2) format("woff2");
+}
+
 * {
     font-family: 'Ubuntu', sans-serif;
 }
@@ -53,3 +58,100 @@ body {
     width: 100%;
     height: 100%;
 }
+
+.NativeWindow {
+    background:#c0c0c0;
+    border:1px solid black;
+    border-color:#dfdfdf black black #dfdfdf;
+    position:relative;
+    font-family: "MS Sans-Serif", Tahoma, sans-serif;
+}
+
+.NativeWindow * {
+    font-family: "Native";
+    /* font-size:10px;
+    font-weight:bold;
+    font-smooth: never; */
+    color: #000;
+    transition: none;
+}
+
+.NativeWindow button {
+    padding-left:7px;
+    padding-right:7px;
+    overflow:hidden;
+    background:#c0c0c0;
+    border:1px solid green;
+    border-color: white black black white;
+}
+
+.NativeWindow button:active {
+    border:0px solid green;
+    border-color: white black black white;
+}
+
+.NativeWindow:before {
+    content:"";
+    display: block;
+    position: absolute;
+    left:0;
+    top:0;
+    right:0;
+    bottom:0;
+    border:1px solid green;
+    border-color: white #808080 #808080 white;      
+}
+
+.NativeWindow .h2{
+    font-family: "MS Sans-Serif", Tahoma, sans-serif;
+    font-size:10px;
+    font-weight:bold;
+    background:linear-gradient(to right, #000080, #1084d0);
+    position:absolute;
+    left:3px;
+    top:3px;
+    right:3px;
+    margin:0;
+    padding:0;
+    line-height:18px;
+    color:white;
+    padding-left:3px;
+  }
+
+.close{
+    position:absolute;
+    right:2px;
+    top:2px;
+    height:14px;
+    width:0;
+    padding-left:14px;
+    overflow:hidden;
+    background:#c0c0c0;
+    border:1px solid green;
+    border-color: white black black white;
+    box-sizing:border-box;   
+  }
+
+  .close:before{
+    content:"";
+    display: block;
+    position: absolute;
+    left:0;
+    top:0;
+    right:0;
+    bottom:0;
+    border:1px solid green;
+    border-color: #dfdfdf #808080 #808080 #dfdfdf;
+  }
+  .close:after{
+    content: "×";
+    position:absolute;
+    left:0;
+    width:calc(100%);
+    text-align: center;
+    top:50%;
+    color:black;
+    background:pink;
+    line-height:0;
+    margin-top:-1px;
+  }

@@ -12,9 +12,11 @@ import { Vector3 } from "three"
 import { clamp, EInterp, VInterp } from "../Functions"
 import { Matrix4 } from "three"
 import { useState } from "react"
+import { ShotgunRenderer } from "./Weapons/Renderer"
+import { WeaponList } from "./Weapons"
 // import { Physics, useSphere, useBox } from "@react-three/cannon"
 
-export const UserWrapper = ({ position, rotation = [0,0,0,"XYZ"], id, animState}) => {
+export const UserWrapper = ({ position, rotation = [0,0,0,"XYZ"], id, animState, hideParts = [], weaponState}) => {
     const group = useRef();
     const grRef = useRef();
     const body = useRef();
@@ -65,6 +67,9 @@ export const UserWrapper = ({ position, rotation = [0,0,0,"XYZ"], id, animState}
             case "sr":
                 Anim("animation.player.strafeR")                
                 break;
+            case "dead":
+                Anim("animation.player.death")                
+                break;
             default:
                 Anim("animation.player.def")      
                 break;
@@ -106,6 +111,14 @@ export const UserWrapper = ({ position, rotation = [0,0,0,"XYZ"], id, animState}
                 IdentifyBodyParts(element);
             });
     }}, [group])
+    const [lastValue, setLastValue] = useState(new Vector3().toArray());
+    // useEffect(() => {
+    //   const currentRot = new Vector3().fromArray(rotation);
+    //   if (currentRot.length() > (new Vector3().fromArray(lastValue).length())) {
+        
+    //   }
+    //   setLastValue(currentRot.toArray())
+    // }, [rotation])
     useEffect(() => {
       var vec = new Vector3();
       var rot = new Vector3().fromArray(rotation);
@@ -129,6 +142,10 @@ export const UserWrapper = ({ position, rotation = [0,0,0,"XYZ"], id, animState}
           <group>
             <group ref={body} name="body" position={[0, 1.5, 0]}>
               <group name="HeadMod" position={[0, 1.56, 0]} ref={head}>
+                {
+                hideParts.includes("head") ?
+                ''
+                :
                 <group name="head">
                   <mesh
                     name="head_1"
@@ -139,29 +156,10 @@ export const UserWrapper = ({ position, rotation = [0,0,0,"XYZ"], id, animState}
                     position={[0, -3.0625, 0]}
                   />
                 </group>
+                }
               </group>
-              <group name="arms"
-                position={[0, 1.25, 0]} ref={arms}>
-              <group name="left_arm" position={[-0.75, 0.1875, 0]}>
-                  <mesh
-                    name="left_arm_1"
-                    castShadow
-                    receiveShadow
-                    geometry={nodes.left_arm_1.geometry}
-                    material={nodes.left_arm_1.material}
-                    position={[0.75, -2.9375, 0]}
-                  />
-                </group>
-                <group name="right_arm" position={[0.75, 0.1875, 0]}>
-                  <mesh
-                    name="right_arm_1"
-                    castShadow
-                    receiveShadow
-                    geometry={nodes.right_arm_1.geometry}
-                    material={nodes.right_arm_1.material}
-                    position={[-0.75, -2.9375, 0]}
-                  />
-                </group>
+              <group name="arms" position={[0, 1.25, 0]} ref={arms}>
+                <WeaponList.bab.renderer state={weaponState} nodes={useGLTF(WeaponList.bab.model).nodes} animations={useGLTF(WeaponList.bab.model).animations} group={arms} animate={true}/>
               </group>
               <mesh
                 name="body_1"

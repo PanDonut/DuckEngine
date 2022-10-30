@@ -19,20 +19,23 @@ import { ChangeState } from "./Animation/StateMachine"
 import { Matrix4 } from "three"
 import { Canvas, extend} from 'react-three-fiber'
 import { AudioLoader } from "three"
+import { UserWrapper } from "./Player"
 
 
-export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAmmo, setPrimaryAmmo }) => {
+export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAmmo, setPrimaryAmmo, id }) => {
 
     const [, forceUpdate] = useReducer((x) => x + 1, 0);
     const { camera, scene } = useThree();
 
     // window.camera = camera;
     const [updateCallback, setUpdateCallback] = useState(null)
+    const [WorldRotation, setWorldRotation] = useState([0,0,0,"XYZ"])
     const [astate, setAState] = useState("stop")
     const [roty, setRY] = useState(0)
     const controlsRef = useRef();
     const gr = useRef();
     const gro = useRef();
+    const PlayerRef = useRef();
 
     // init movement
     const speed = 600;
@@ -59,11 +62,27 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
       crouching: false
     });
 
+    const [HorRot, setHorRot] = useState(0);
+
+    const [HorRot1, setHorRot1] = useState(0);
+
     useEffect(() => {
       api.velocity.subscribe((v) => (state.current.vel = v));
     }, [api]);
 
     const { forward, backward, left, right, jump, crouch } = usePersonControls();
+
+    useEffect(() => {
+      if (right) {
+        FInterp(HorRot, -0.05, 0.002, 5, setHorRot)
+      }
+      if (left) {
+        FInterp(HorRot, 0.05, 0.002, 5, setHorRot)
+      }
+      if (!right && !left) {
+        FInterp(HorRot, 0.0, 0.002, 5, setHorRot)
+      }
+    }, [forward, backward, left, right])
 
     /**
      * 
@@ -125,20 +144,18 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
     //       console.log("THIS", thisSpread)
     //     }
     //   })
-    //   // window.addEventListener("mousemove", (e) => {
-    //   //   if (gro.current) {
-    //   //     FInterp(Math.abs(gro.current.rotation.y), 100, 1, 20, setRY)
-    //   //   }
-    //   // })
+      
     // }, []) 
 
     useEffect(() => {
+      if (window.health > 0) {
       // console.log(crouch)
       if (crouch) {
         FInterp(height, 2.55, 0.05, 9, setHeight);
       } else {
         FInterp(height, 3.45, 0.05, 9, setHeight);
       }
+    }
     }, [crouch])
 
     const [hor, setHor] = useState(1);
@@ -171,7 +188,7 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
         let d = new Vector3();
         d.setFromMatrixColumn(camera.matrix, 0);
 
-
+        if (window.health > 0) {
         if (state.current.jumping) {
           if (forward) {
             setVertical(0.75);      
@@ -253,6 +270,7 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
         } else {
           state.current.crouching = false;
         }
+        }
         // if (jump) {
         //   api.velocity.set(0, 3, 0)     
         // }
@@ -283,7 +301,11 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
           height + sphereRef.current.position.y,
           sphereRef.current.position.z
         );
-        window.CameraPosition =sphereRef.current.position.toArray();
+        if (PlayerRef.current) {
+          PlayerRef.current.position.set(sphereRef.current.position.x,sphereRef.current.position.y,sphereRef.current.position.z)
+        }     
+        // setWorldRotation([cameraDirection.toArray()[0],cameraDirection.toArray()[1],cameraDirection.toArray()[2], "XYZ"])
+        window.CameraPosition = sphereRef.current.position.toArray();
         // gr.current.position.set(
         //   sphereRef.current.position.x,
         //   height + sphereRef.current.position.y,
@@ -301,6 +323,7 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
         gr.current.position.set(cwd.x, cwd.y, cwd.z);
         gr.current.setRotationFromQuaternion(camera.quaternion);
 
+        if (window.health > 0) {
         if ((forward || backward || right || left) && !crouch) {
           setAState("run")
         } else if ((forward || backward || right || left) && crouch) {
@@ -308,10 +331,9 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
         } else {
           setAState("idle")
         } 
+      }
         
         if (controlsRef.current) {
-          var rot = new Vector3(0, 0, 0);
-          camera.getWorldDirection(rot)
           onControlsChange(sphereRef.current.position, cameraDirection);
         }
 
@@ -404,8 +426,18 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
         <group>  
           <PointerLockControls minPolarAngle={0.01} maxPolarAngle={3} ref={controlsRef} camera={camera} />               
         </group> 
+        {/* <group ref={PlayerRef}>
+          <UserWrapper
+          key={"PlayerWorldModel"}
+          id={id}
+          position={[0,0,0]}
+          rotation={[0,0,0]}
+          animState={astate}
+          hideParts={["head"]}
+          />
+        </group>       */}
         <group ref={gr} scale={[0.1, 0.1, 0.1]} renderOrder={2}>
-          <group ref={gro} position={[0.3, -0.3, 0]}>
+          <group ref={gro} position={[0.3, -0.3, 0]} rotation={[0,0,HorRot]}>
             {
               selW == 0 ?
               ReturnWeapon(WeaponList[Loadout[0]])       

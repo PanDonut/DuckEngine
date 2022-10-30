@@ -24,6 +24,8 @@ gameroot.render(<App/>)
 setTimeout(() => {
     // InitializeLogon();
     OfflineLogon();
+    const e = new Event("EngineStart");
+    window.dispatchEvent(e)
     if (GetLoginData() != null) Start();
 }, 1000)
 
@@ -81,3 +83,42 @@ window.addEventListener(
     },
     true
 );
+
+// Plugin crap
+
+window.API = {};
+window.API.HUD = {
+    inject: (element, style) => {
+        const styleFile = document.createElement("style");
+        styleFile.innerHTML = `
+        ${element.replace("#", ".")} {
+            ${style}
+        }
+        `
+        document.body.appendChild(styleFile);
+    }
+}
+window.API.Plugins = {};
+window.API.dom = {};
+window.API.Data = API;
+window.API.AddData = (data) => {API.push(data)}
+
+function InitPlugin(manifest) {
+  if (window.ExtensionManifest == undefined) {
+      window.ExtensionManifest = [];
+  }
+  window.ExtensionManifest.push(manifest);
+  console.log(manifest.name + " - PLUGIN LOADED");
+}
+window.API.Plugins.InitPlugin = InitPlugin;
+
+if (localStorage.getItem("df_extenstions") != null) {
+  JSON.parse(localStorage.getItem("df_extenstions")).forEach(element => {
+    setTimeout(() => {
+      var scriptInject = document.createElement("script");
+      scriptInject.innerHTML = element.script;
+      document.body.appendChild(scriptInject);
+      window.API.Plugins.List = window.ExtensionManifest;
+    }, 300)   
+  });
+}
