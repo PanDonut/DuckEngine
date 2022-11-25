@@ -124,6 +124,36 @@ export function FInterpFromConst(currentconst, to, time, delta, setF) {
 
 /**
  * 
+ * @param {Float} value 
+ * @param {Float} every 
+ * @param {Int} times 
+ * @param {Function} set 
+ */
+
+export function FOverTime(value, every, times, add) {
+    var time = 0;
+    var timea = 0;
+    const x = setInterval(() => {
+        if (time == times) {
+            const y = setInterval(() => {
+                if (time == times) {
+                    clearInterval(y);
+                } else {
+                    ++timea;
+                    add(0 - value)
+                }
+            }, every)
+            clearInterval(x);
+            
+        } else {
+            ++time;
+            add(value)
+        }
+    }, every);
+}
+
+/**
+ * 
  * @param {Number} max 
  * @param {Number} min 
  * @returns Random number in given range
@@ -135,3 +165,8 @@ export function RandomFloatInRange(max, min) {
 
 export const clamp = (val, in_min, in_max, out_min, out_max) =>
   ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+
+  export function FLerp(a, b, f)
+  {
+    return a + f * (b - a);
+  }

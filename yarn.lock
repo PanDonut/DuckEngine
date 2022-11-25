@@ -6281,10 +6281,10 @@
   "resolved" "https://registry.npmjs.org/three-mesh-bvh/-/three-mesh-bvh-0.5.16.tgz"
   "version" "0.5.16"
 
-"three-stdlib@^2.14.3", "three-stdlib@^2.8.11":
-  "integrity" "sha512-81jgpEajYB1HczIKAqcG8oEgRPbKJr/8KfxMY3xIHe9kDNw426PckStLt+GVmV15ezOS+QlUFVSuyjSRPpSLsg=="
-  "resolved" "https://registry.npmjs.org/three-stdlib/-/three-stdlib-2.15.0.tgz"
-  "version" "2.15.0"
+"three-stdlib@^2.14.3", "three-stdlib@^2.18.1", "three-stdlib@^2.8.11":
+  "integrity" "sha512-5sAAvelR9Pl38McVAbMNViVMUWnaSP4Y/hDbQ57LZyepFCaeZm0HZWkTk6LIZF2Qo6U2xcgnLUSBpHhW4qUNtg=="
+  "resolved" "https://registry.npmjs.org/three-stdlib/-/three-stdlib-2.18.1.tgz"
+  "version" "2.18.1"
   dependencies:
     "@babel/runtime" "^7.16.7"
     "@types/offscreencanvas" "^2019.6.4"

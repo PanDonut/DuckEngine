@@ -19,8 +19,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background-color: #fff;
     z-index: 7;
@@ -28,9 +28,26 @@
 
 .UIAmmo {
     position: fixed;
-    right: 10px;
-    bottom: 10px;
+    right: 0px;
+    bottom: 0px;
     z-index: 7;
+    width: 130px;
+    height: 79px;
+}
+
+.UIAmmo img {
+  object-fit: contain;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 120%;
+  height: 100%;
+  image-rendering: pixelated;
+  object-position: right bottom;
+}
+
+.UIAmmo h2, .UIAmmo h3 {
+  z-index: 10;
 }
 
 .Representation_3D {
@@ -250,7 +267,7 @@ button:focus {
     top: 50%;
     left: 50%;
     width: 100px;
-    height: 50px;
+    height: 25px;
     transform: translate(-50%,-50%);
     z-index: 7;
 }
@@ -259,9 +276,9 @@ button:focus {
     position: absolute;
     top: 0;
     left: 0;
-    width: 50px;
-    height: 50px;
-    border-left: 5px solid #fff;
+    width: 25px;
+    height: 25px;
+    border-left: 3px solid #fff;
     border-radius: 20px;
 }
 
@@ -269,9 +286,9 @@ button:focus {
     position: absolute;
     top: 0;
     right: 0;
-    width: 50px;
-    height: 50px;
-    border-right: 5px solid #fff;
+    width: 25px;
+    height: 25px;
+    border-right: 3px solid #fff;
     border-radius: 20px;
 }
 
@@ -490,4 +507,186 @@ button:focus {
     border-radius: 6px;
     height: 30px;
     width: 60px;
+  }
+
+  .ClipCount {
+    margin: 0;
+    position: absolute;
+    right: 45px;
+    font-size: 47px;
+    font-family: 'Pixel', sans-serif;
+    bottom: 5px;
+  }
+  .AmmoCount {
+    margin: 0;
+    position: absolute;
+    right: 5px;
+    font-size: 26px;
+    font-family: 'Pixel', sans-serif;
+    bottom: 8px;
+  }
+
+  .KillList {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 300px;
+    height: 50vh;
+    z-index: 11;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    transition: 0.25s ease;
+  }
+
+  @keyframes kill {
+    from {
+      top: 49px
+    }
+    to {
+      top: 10px;
+    }
+  }
+
+  .KillList .Kill {
+    position: relative;
+    width: 100%;
+    height: 32px;
+    background-color: #000000aa;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    font-family: "Pixel", sans-serif;
+    transition: 0.25s ease;
+  }
+
+  .KillList .Kill p {
+    font-family: "Pixel", sans-serif;
+  }
+
+  .KillList .Kill img {
+    position: relative;
+    width: 25px;
+    object-fit: contain;
+    height: 25px;
+  }
+
+  .Points {
+    position: fixed;
+    z-index: 12;
+    width: 40vw;
+    display: flex;
+    align-items:flex-start;
+    justify-content: space-around;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+  }
+
+  .Points p {
+    position: relative;
+    width: 90px;
+    height: 32px;
+    margin: 0;
+    text-align: center;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    vertical-align: middle;
+    padding-top: 10px;
+  }
+  .Points p:first-child {
+    background-color: #4a8bed;
+  }
+  .Points p:last-child {
+    background-color: #3f9b26;
+  }
+
+  .Viewmodel {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+  }
+
+  .Health {
+    position: fixed;
+    left: 10px;
+    bottom: 10px;
+    width: 120px;
+    height: 120px;
+    z-index: 12;
+    display: flex;
+  }
+
+  .Health img {
+    position: relative;
+    left: 0;
+    top: 0;
+    height: 120px;
+    width: 120px;
+    image-rendering: pixelated;
+  }
+  .Health p {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    color: #000;
+    font-size: 32px;
+    text-align: center;
+    width: 100px;
+    vertical-align: middle;
+    font-family: 'Pixel', sans-serif;
+    margin-top: 3px;
+    margin-left: 1px;
+  }
+
+  .redFlash {
+    animation: flash 1s alternate-reverse infinite;
+  }
+
+  @keyframes flash {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  .Red {
+    position: absolute !important;
+    left: 0 !important;
+  }
+
+  .ElementControl {
+    outline: solid 4px;
+    z-index: 999;
+    position: relative;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .ElementData {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: auto;
+    height: 20px;
+    padding-right: 7px;
+    padding-left: 4px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    height: 100%;
   }

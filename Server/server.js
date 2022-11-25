@@ -3,6 +3,7 @@ import express, { json } from 'express'
 import Router from 'express-promise-router'
 import { Server } from 'socket.io'
 import config from './config.json'
+import cors from 'cors'
 const cert = fs.readFileSync('./cert/CA.pem');
 
 // Create router
@@ -19,6 +20,8 @@ const router = Router()
 
 // Create express app and listen on port 4444
 const app = express()
+
+app.use(cors());
 
 const server = app.listen(process.env.PORT || 4444, () => {
     console.log(`Listening on port http://localhost:4444...`)
@@ -40,6 +43,20 @@ app.get("/config", function (req, res) {
     res.json(config);
 });
 
+var GameData = {
+    "points": {
+        "blue": 0,
+        "green": 0
+    }   
+}
+
+function UpdateGameData() {
+    ioServer.sockets.emit("gamedata", GameData)
+}
+
+setInterval(() => {
+    UpdateGameData()
+}, config.sv.gamedataInterval)
 
 // Socket app msgs
 ioServer.on('connection', (client) => {
@@ -48,6 +65,9 @@ ioServer.on('connection', (client) => {
     )  
   
     clients[client.id] = {}
+    clients[client.id].team = Object.entries(clients).filter(item => item[1].team == "green").length > Object.entries(clients).filter(item => item[1].team == "blue").length ? "blue" : "green";
+    console.log(Object.entries(clients))
+    console.log(clients[client.id].team)
     clients[client.id].health = 125;
 
     if (Object.keys(clients).length == config.maxplayers + 1) {
@@ -65,14 +85,36 @@ ioServer.on('connection', (client) => {
     client.on("state", (state) => {
         clients[client.id].state = state;
     })
-
-    client.on("weaponstate", (state) => {
-        clients[client.id].WState = state;
+    client.on("respawn", (state) => {
+        clients[client.id].health = 125;
     })
 
-    client.on("dmg", (data) => {
-        console.log(`(${data.id}) ${clients[data.id].name} took ${data.dmg} damage (now ${clients[data.id].health - data.dmg})`)
-        clients[data.id].health = clients[data.id].health - data.dmg
+    client.on("weaponstate", (state) => {
+        clients[client.id].WState = state; 
+        setTimeout(() => {
+            clients[client.id].WState = "not_av"; 
+        }, 100)      
+    })
+
+    client.on("dmg", (data) => {    
+        if (clients[data.id].health > 0) {
+            if (config.sv.friendlyFire == false) {
+                if (clients[data.id].team != clients[client.id].team || client.id == data.id) {
+                    console.log(`(${data.id}) ${clients[data.id].name} took ${data.dmg} damage (now ${clients[data.id].health - data.dmg})`)
+                    clients[data.id].health = clients[data.id].health - data.dmg;
+                    clients[data.id].lastDamage = client.id;
+                }
+            } else {
+                console.log(`(${data.id}) ${clients[data.id].name} took ${data.dmg} damage (now ${clients[data.id].health - data.dmg})`)
+                clients[data.id].health = clients[data.id].health - data.dmg;
+            }        
+            if (clients[data.id].health <= 0) {
+                ioServer.sockets.emit("kill", { who: [data.id, clients[data.id].team], by: [client.id, clients[client.id].team], weapon: data.weapon })
+                if (config.map.includes("de_")) {
+                    ++GameData.points[clients[client.id].team]
+                }
+            }
+        }
     })
 
     client.on("selW", (data) => {
@@ -84,8 +126,11 @@ ioServer.on('connection', (client) => {
     })
 
     client.on("audioEmit", (data) => {
-        console.log(data)
         ioServer.sockets.emit("audio", data)
+    })
+
+    client.on("spawnProjectileEmit", (data) => {
+        ioServer.sockets.emit("spawnProjectile", data)
     })
 
     //Add a new client indexed by his id

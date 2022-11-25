@@ -59,8 +59,9 @@ function createWindow() {
   // Don't show until we are ready and loaded
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
-    mainWindow.openDevTools();
-
+    if (dev) {
+      mainWindow.webContents.openDevTools()
+    }
   })
 
   // Emitted when the window is closed.

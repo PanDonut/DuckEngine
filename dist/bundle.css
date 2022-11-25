@@ -94,17 +94,37 @@ h1 {
     -webkit-transform: translate(-50%, -50%);
         -ms-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
-    width: 0.625rem;
-    height: 0.625rem;
+    width: 0.375rem;
+    height: 0.375rem;
     border-radius: 50%;
     background-color: #fff;
     z-index: 7;
 }
 .UIAmmo {
     position: fixed;
-    right: 0.625rem;
-    bottom: 0.625rem;
+    right: 0;
+    bottom: 0;
     z-index: 7;
+    width: 8.125rem;
+    height: 4.9375rem;
+}
+.UIAmmo img {
+  -o-object-fit: contain;
+     object-fit: contain;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 120%;
+  height: 100%;
+  -ms-interpolation-mode: nearest-neighbor;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: -o-pixelated;
+      image-rendering: pixelated;
+  -o-object-position: right bottom;
+     object-position: right bottom;
+}
+.UIAmmo h2, .UIAmmo h3 {
+  z-index: 10;
 }
 .Representation_3D {
     position: fixed;
@@ -389,7 +409,7 @@ button:focus {
     top: 50%;
     left: 50%;
     width: 6.25rem;
-    height: 3.125rem;
+    height: 1.5625rem;
     -webkit-transform: translate(-50%,-50%);
         -ms-transform: translate(-50%,-50%);
             transform: translate(-50%,-50%);
@@ -399,18 +419,18 @@ button:focus {
     position: absolute;
     top: 0;
     left: 0;
-    width: 3.125rem;
-    height: 3.125rem;
-    border-left: 0.3125rem solid #fff;
+    width: 1.5625rem;
+    height: 1.5625rem;
+    border-left: 0.1875rem solid #fff;
     border-radius: 1.25rem;
 }
 .H div:last-child {
     position: absolute;
     top: 0;
     right: 0;
-    width: 3.125rem;
-    height: 3.125rem;
-    border-right: 0.3125rem solid #fff;
+    width: 1.5625rem;
+    height: 1.5625rem;
+    border-right: 0.1875rem solid #fff;
     border-radius: 1.25rem;
 }
 .ExtenstionInstaller {
@@ -650,6 +670,220 @@ button:focus {
     border-radius: 0.375rem;
     height: 1.875rem;
     width: 3.75rem;
+  }
+.ClipCount {
+    margin: 0;
+    position: absolute;
+    right: 2.8125rem;
+    font-size: 2.9375rem;
+    font-family: 'Pixel', sans-serif;
+    bottom: 0.3125rem;
+  }
+.AmmoCount {
+    margin: 0;
+    position: absolute;
+    right: 0.3125rem;
+    font-size: 1.625rem;
+    font-family: 'Pixel', sans-serif;
+    bottom: 0.5rem;
+  }
+.KillList {
+    position: fixed;
+    top: 0.625rem;
+    right: 0.625rem;
+    width: 18.75rem;
+    height: 50vh;
+    z-index: 11;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    gap: 0.4375rem;
+    -webkit-transition: 0.25s ease;
+    -o-transition: 0.25s ease;
+    transition: 0.25s ease;
+  }
+@-webkit-keyframes kill {
+    from {
+      top: 3.0625rem
+    }
+    to {
+      top: 0.625rem;
+    }
+  }
+@keyframes kill {
+    from {
+      top: 3.0625rem
+    }
+    to {
+      top: 0.625rem;
+    }
+  }
+.KillList .Kill {
+    position: relative;
+    width: 100%;
+    height: 2rem;
+    background-color: rgba(0,0,0,0.66667);
+    border-radius: 0.4375rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-pack: space-evenly;
+        -ms-flex-pack: space-evenly;
+            justify-content: space-evenly;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    font-family: "Pixel", sans-serif;
+    -webkit-transition: 0.25s ease;
+    -o-transition: 0.25s ease;
+    transition: 0.25s ease;
+  }
+.KillList .Kill p {
+    font-family: "Pixel", sans-serif;
+  }
+.KillList .Kill img {
+    position: relative;
+    width: 1.5625rem;
+    -o-object-fit: contain;
+       object-fit: contain;
+    height: 1.5625rem;
+  }
+.Points {
+    position: fixed;
+    z-index: 12;
+    width: 40vw;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align:start;
+        -ms-flex-align:start;
+            align-items:flex-start;
+    -ms-flex-pack: distribute;
+        justify-content: space-around;
+    left: 50%;
+    top: 0;
+    -webkit-transform: translateX(-50%);
+        -ms-transform: translateX(-50%);
+            transform: translateX(-50%);
+  }
+.Points p {
+    position: relative;
+    width: 5.625rem;
+    height: 2rem;
+    margin: 0;
+    text-align: center;
+    border-bottom-left-radius: 0.625rem;
+    border-bottom-right-radius: 0.625rem;
+    vertical-align: middle;
+    padding-top: 0.625rem;
+  }
+.Points p:first-child {
+    background-color: #4a8bed;
+  }
+.Points p:last-child {
+    background-color: #3f9b26;
+  }
+.Viewmodel {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+  }
+.Health {
+    position: fixed;
+    left: 0.625rem;
+    bottom: 0.625rem;
+    width: 7.5rem;
+    height: 7.5rem;
+    z-index: 12;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+.Health img {
+    position: relative;
+    left: 0;
+    top: 0;
+    height: 7.5rem;
+    width: 7.5rem;
+    -ms-interpolation-mode: nearest-neighbor;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: -o-pixelated;
+        image-rendering: pixelated;
+  }
+.Health p {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    margin: 0;
+    color: #000;
+    font-size: 2rem;
+    text-align: center;
+    width: 6.25rem;
+    vertical-align: middle;
+    font-family: 'Pixel', sans-serif;
+    margin-top: 0.1875rem;
+    margin-left: 0.0625rem;
+  }
+.redFlash {
+    animation: flash 1s alternate-reverse infinite;
+  }
+@-webkit-keyframes flash {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+@keyframes flash {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+.Red {
+    position: absolute !important;
+    left: 0 !important;
+  }
+.ElementControl {
+    outline: solid 0.25rem;
+    z-index: 999;
+    position: relative;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+.ElementData {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: auto;
+    height: 1.25rem;
+    padding-right: 0.4375rem;
+    padding-left: 0.25rem;
+  }
+input[type="text"] {
+    width: 100%;
+    height: 100%;
   }
 @font-face {
     font-family: 'Native';

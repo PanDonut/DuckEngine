@@ -45,7 +45,7 @@ if (localStorage.getItem("setting.shadowQ") == null) {
 }
 
 if (localStorage.getItem("setting.AO") == null) {
-    localStorage.setItem("setting.AO", "true")
+    localStorage.setItem("setting.AO", "false")
 }
 
 if (localStorage.getItem("setting.antialiasing") == null) {
@@ -84,6 +84,17 @@ window.addEventListener(
     true
 );
 
+// Class extensions
+
+Array.prototype.random = function() {
+    return this[this.length * Math.random() | 0];
+};
+
+Math.randomInRange = function(min, max, decimalPoints) {
+    const str = (Math.random() * (max - min) + min).toFixed(decimalPoints);
+    return parseFloat(str);
+}
+
 // Plugin crap
 
 window.API = {};
@@ -108,15 +119,17 @@ function InitPlugin(manifest) {
       window.ExtensionManifest = [];
   }
   window.ExtensionManifest.push(manifest);
-  console.log(manifest.name + " - PLUGIN LOADED");
+  console.log(manifest.name + " - MOD INIT");
 }
 window.API.Plugins.InitPlugin = InitPlugin;
 
 if (localStorage.getItem("df_extenstions") != null) {
   JSON.parse(localStorage.getItem("df_extenstions")).forEach(element => {
-    setTimeout(() => {
+    setTimeout(() => {       
       var scriptInject = document.createElement("script");
-      scriptInject.innerHTML = element.script;
+    //   scriptInject.innerHTML = `this.onerror = (e) => { console.error("Uncaught Mod Error:"); console.error(e, ":(")  } \n` + element.script;
+      scriptInject.innerHTML = `try {\n` + element.script + `\n} catch(e) { 
+        console.error("%cUncaught Mod Error: \\n", 'font-size: 18px;', "\\n" + e.toString()); \n}`;
       document.body.appendChild(scriptInject);
       window.API.Plugins.List = window.ExtensionManifest;
     }, 300)   

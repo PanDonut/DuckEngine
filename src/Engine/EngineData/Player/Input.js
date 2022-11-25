@@ -29,11 +29,9 @@ export const usePersonControls = () => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       setMovement((m) => ({ ...m, [moveFieldByKey(e.code)]: true }))
-      console.log(e)
     }
     const handleKeyUp = (e) => {
       setMovement((m) => ({ ...m, [moveFieldByKey(e.code)]: false }))
-      console.log(e)
     }
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keyup', handleKeyUp)

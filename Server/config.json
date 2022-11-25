@@ -1,8 +1,11 @@
 {
-    "map": "dm_arena",
+    "map": "de_arena",
     "maxplayers": 2,
     "sv": {
-        "anonymous": true
+        "anonymous": true,
+        "gamedataInterval": 250,
+        "friendlyFire": false,
+        "respawnTime": 10
     },
     "cl": {
 
