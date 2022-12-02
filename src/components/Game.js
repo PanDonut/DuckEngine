@@ -72,6 +72,9 @@ import { PlayerDataContext } from "./App";
 import { Euler } from "three";
 import axios from "axios";
 import { Projectile } from "../Engine/EngineData/Projectile";
+import TranqDart from "../Engine/EngineData/Player/Weapons/Projectile/TranqualizerProjectile";
+import { Delay } from '@shyrii/web-audio-effects';
+import { Ragdoll } from "../Engine/EngineData/Player/Ragdoll";
 
 var AudioList = [];
 
@@ -82,6 +85,10 @@ var GameData = {
     green: 0,
   },
 };
+
+var Projectiles = [];
+
+let audioContext = new AudioContext();
 
 var team = "green";
 
@@ -125,6 +132,20 @@ export default function Game() {
       setConfig(res.data);
     })
   }, [])
+
+  const ProjectileManager = {
+    create: (type, position, rotation, direction, shooterID) => {
+      Projectiles.push({
+        type: type,
+        startPosition: [ position[0], position[1] + 3.55, position[2] ],
+        rotation: rotation,
+        direction: direction,
+        shooterID: shooterID,
+        id: "projectile_" + type + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+      })
+    }
+  };
+
   const PlayerContext = useContext(PlayerDataContext);
 
   const ViewmodelGroup = useRef();
@@ -207,7 +228,7 @@ export default function Game() {
       });
       socketClient.on("spawnProjectile", (data) => {
         console.log("SPAWNING")
-        new Projectile();
+        ProjectileManager.create("tranq_dart", data.position, data.rotation, data.direction, data.id)
       });
       socketClient.on("kill", (data) => {
         var newArr = KillList;
@@ -305,6 +326,14 @@ export default function Game() {
         sound.onended = () => {
           document.body.removeChild(sound);
         };
+        if (getGClients()[socketClient.id].effects.tranqualizer == true) {
+          console.log("TIME", attach)
+          if (!attach) {
+            sound.playbackRate = 0.9
+          }
+        } else {
+          sound.playbackRate = 1
+        }
         sound.ontimeupdate = () => {
           if (!attach) {
             const playerPos = new Vector3().fromArray(window.CameraPosition);
@@ -314,6 +343,14 @@ export default function Game() {
             //console.log("distance", distance);
             const vol = 1 - clamp(distance, 0, Sounds[type].range, 0, 1);
             sound.volume = vol >= 0 ? vol : 0;
+            if (getGClients()[socketClient.id].effects.tranqualizer == true) {
+              console.log("TIME", attach)
+              if (!attach) {
+                sound.playbackRate = 0.9
+              }
+            } else {
+              sound.playbackRate = 1
+            }
           }
         };
         //console.log("Audio Created");
@@ -362,6 +399,7 @@ export default function Game() {
       {socketClient ? (
         <>
           <Canvas
+            style={{ filter: clients[socketClient.id] ? clients[socketClient.id].effects.tranqualizer == true ? "grayscale(200%) brightness(75%) blur(2px)" : '' : '', transition: "filter 1s ease-in-out" }}
             onFocus={() => {
               navigator.keyboard.lock();
             }}
@@ -371,7 +409,7 @@ export default function Game() {
               if (e.key == "B") {
               }
             }}
-            className="GameViewport"
+            className={`GameViewport ${clients[socketClient.id] ? clients[socketClient.id].effects.tranqualizer == true ? 'shakeDrunk' : '' : ''}`}
             onClick={() => {}}
             dpr={
               ((Math.min(window.devicePixelRatio), 2) / 12) *
@@ -393,13 +431,11 @@ export default function Game() {
               broadphase={"Naive"}
             >
               { getHealth() > 0 ?
-              <PlayerDataContext.Provider value={PlayerContext}>
                 <ControlsWrapper
                   socket={socketClient}
                   id={socketClient.id}
                   Parts={Parts}
                 />
-              </PlayerDataContext.Provider>
               :
               <>
                 <KillCam clients={clients} killer={clients[socketClient.id].lastDamage}/>
@@ -408,6 +444,58 @@ export default function Game() {
               {/* <DefMap/>  */}
               <Plane />
               <ShootingRangeMap/>
+              {
+                Projectiles.map((item) => {
+                  if (item.type = "tranq_dart") {
+                    return (
+                      <TranqDart socketID={socketClient.id} damagerID={item.shooterID} direction={item.direction} startPosition={item.startPosition} rotation={item.rotation} key={item.id} />
+                    )
+                  } else {
+                    return (
+                      <></>
+                    )
+                  }
+                })
+              }
+              {Object.keys(clients)
+              .filter((clientKey) => clientKey !== socketClient.id)
+              .map((client) => {
+                const { position, rotation, loadout, selW, health } = getGClients()[client];
+
+                if (health > 0) {
+                  return (
+                    <group position={position}>
+                      <UserWrapper
+                      key={client}
+                      id={client}
+                      position={position}
+                      rotation={rotation}
+                      animState={clients[client].state}
+                      weaponState={clients[client].WState}
+                      Parts={Parts}
+                      loadout={loadout}
+                      selW={selW}
+                      health={health}
+                    />
+                    </group>
+                  )
+                } else {
+                  return (
+                    <Ragdoll 
+                    key={client}
+                    id={client}
+                    position={position}
+                    rotation={rotation}
+                    animState={clients[client].state}
+                    weaponState={clients[client].WState}
+                    Parts={Parts}
+                    loadout={loadout}
+                    selW={selW}
+                    health={health}
+                    />
+                  )
+                }
+              })}  
             </Physics>
             {/* <Skybox position={[0,0,0]} /> @DEPRECATED */}
             <Environment background={true} files={Sunset} />
@@ -419,25 +507,7 @@ export default function Game() {
             <FixedSpotlight color={"#ffffff"} shadowBias={-0.004} intensity={2} OriginPosition={[0,5,0]} position={[0,5,0]} rotation={[0,0,0]} angle={0.9}/>
             
 
-            {Object.keys(clients)
-              .filter((clientKey) => clientKey !== socketClient.id)
-              .map((client) => {
-                const { position, rotation, loadout, selW, health } = clients[client];
-                return (
-                  <UserWrapper
-                    key={client}
-                    id={client}
-                    position={position}
-                    rotation={rotation}
-                    animState={clients[client].state}
-                    weaponState={clients[client].WState}
-                    Parts={Parts}
-                    loadout={loadout}
-                    selW={selW}
-                    health={health}
-                  />
-                );
-              })}
+                        
             <EffectComposer multisampling={0}>
               {/* {localStorage.getItem("setting.Bloom") != "false" ? (
                 <Bloom

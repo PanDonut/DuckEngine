@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "PORT=5000 node --experimental-json-modules .",
-    "build": "nexe server.js -b"
+    "start": "PORT=5000 node --experimental-json-modules ."
   },
   "type": "module",
   "author": "",

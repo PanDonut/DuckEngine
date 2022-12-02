@@ -147,7 +147,7 @@ export const UserWrapper = ({
     var rot = new Vector3().fromArray(rotation);
     vec = rot;
     vec.y = 0;
-    vec.add(group.current.position);
+    vec.add(new Vector3().fromArray(position));
     group.current.lookAt(vec);
   }, [rotation]);
 
@@ -163,14 +163,14 @@ export const UserWrapper = ({
   }, [selW])
 
   return (
-    <group ref={group} rotation={r} dispose={null} position={position}>
+    <group ref={group} dispose={null}>
       <group ref={grRef} />
       <group name="blockbench_export">
         <group>
-          <group name="Root" rotation={[Math.PI, 0, Math.PI]}>
+          <group name="player_coll_Root" rotation={[Math.PI, 0, Math.PI]}>
             <group>
-              <group ref={body} name="body" position={[0, 1.5, 0]}>
-                <group name="HeadMod" position={[0, 1.56, 0]} ref={head}>
+              <group ref={body} name="player_coll_body" position={[0, 1.5, 0]}>
+                <group name="player_coll_HeadMod" position={[0, 1.56, 0]} ref={head}>
                   {hideParts.includes("head") ? (
                     ""
                   ) : (
@@ -187,7 +187,7 @@ export const UserWrapper = ({
                     <RussianHat />
                   )}
                 </group>
-                <group name="arms" position={[0, 1.25, 0]} ref={arms}>
+                <group name="player_coll_arms" position={[0, 1.25, 0]} ref={arms}>
                   {
                     CurrentWeapon.renderer ?
                     <CurrentWeapon.renderer

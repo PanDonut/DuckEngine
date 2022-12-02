@@ -1,8 +1,8 @@
 import fs from 'fs'
 import express, { json } from 'express'
 import Router from 'express-promise-router'
-import { Server } from 'socket.io'
-import config from './config.json'
+import { Server } from 'socket.io';
+import config from './config.json';
 import cors from 'cors'
 const cert = fs.readFileSync('./cert/CA.pem');
 
@@ -65,6 +65,7 @@ ioServer.on('connection', (client) => {
     )  
   
     clients[client.id] = {}
+    clients[client.id].effects = {};
     clients[client.id].team = Object.entries(clients).filter(item => item[1].team == "green").length > Object.entries(clients).filter(item => item[1].team == "blue").length ? "blue" : "green";
     console.log(Object.entries(clients))
     console.log(clients[client.id].team)
@@ -82,10 +83,18 @@ ioServer.on('connection', (client) => {
         console.log(client.id + " logged in as " + data.name + " (" + data.uid + ")")
     })
 
+    client.on("AddEffect", (data) => {
+        clients[data.id].effects[data.name] = true;
+        setTimeout(() => {
+            clients[data.id].effects[data.name] = false;
+        }, data.time * 1000)
+    })
+
     client.on("state", (state) => {
         clients[client.id].state = state;
     })
     client.on("respawn", (state) => {
+        console.log(client.id + " respawning...")
         clients[client.id].health = 125;
     })
 

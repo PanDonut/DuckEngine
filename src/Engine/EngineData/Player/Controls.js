@@ -1,4 +1,4 @@
-import { FirstPersonControls, OrbitControls, PerspectiveCamera, PointerLockControls, softShadows, Text } from "@react-three/drei"
+import { FirstPersonControls, PerspectiveCamera, OrbitControls, PointerLockControls, softShadows, Text } from "@react-three/drei"
 import React, { useEffect } from "react"
 import { useState } from "react"
 import { useRef } from "react"
@@ -20,17 +20,18 @@ import { Matrix4 } from "three"
 import { Canvas, extend} from 'react-three-fiber'
 import { AudioLoader } from "three"
 import { UserWrapper } from "./Player"
-import { getCanShoot, getHealth, getPlayerData } from "../../../components/Globals"
+import { getCanShoot, getGClients, getHealth, getPlayerData } from "../../../components/Globals"
 import RussianHat from "./Cosmetics/Hats/RussianHat"
 import { RussianCoat_Arms, RussianCoat_Body, RussianCoat_Legs } from "./Cosmetics/Hats/RussianCoat"
 import { lerp } from "three/src/math/mathutils"
 import { useContext } from "react"
 import { PlayerDataContext } from "../../../components/App"
 import { PhysicsManager } from "../Physics"
+import { Taunt_Laugh } from "../Taunts/Laugh/Laugh"
+import { ThirdPersonCamera } from "../TPCamera"
 
 
 export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAmmo, setPrimaryAmmo, id, Parts }) => {
-  softShadows();
     const [, forceUpdate] = useReducer((x) => x + 1, 0);
     const { camera, scene } = useThree();
 
@@ -38,26 +39,55 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
 
     // window.camera = camera;
     const [updateCallback, setUpdateCallback] = useState(null)
+
+    const [r, setR] = useState([0, 0, 0]);
+
+    const [Taunt, setTaunt] = useState(undefined);
+
     const [WorldRotation, setWorldRotation] = useState([0,0,0,"XYZ"])
     const [astate, setAState] = useState("stop")
     const [roty, setRY] = useState(0)
     const controlsRef = useRef();
+    const controlsOrbitRef = useRef();
     const gr = useRef();
     const gro = useRef();
     const PlayerRef = useRef();
 
+    const TauntRef = useRef();
+    const TauntGroupRef = useRef();
+
+    var direction = [];
+    useEffect(() => {
+      /**
+       * 
+       * @param {KeyboardEvent} e 
+       */
+      const handleKeyUp = (e) => {
+        if (e.key == "b") {
+          setTaunt("laugh");
+          // controlsRef.current.enabled = false;
+          // controlsOrbitRef.current.enabled = true;
+          // forceUpdate();
+        }
+      };
+      document.addEventListener("keyup", handleKeyUp);
+      return () => {
+        document.removeEventListener("keyup", handleKeyUp);
+      };
+    }, []);
+
     // init movement
-    const speed = 700;
+    const speed = getGClients()[id] ? getGClients()[id].effects.tranqualizer == true ? 370 : 700 : 700;
     const bulletSpeed = 30;
     const bulletCoolDown = 300;
-    const jumpSpeed = 4;
+    const jumpSpeed = getGClients()[id] ? getGClients()[id].effects.tranqualizer == true ? 2 : 4 : 4;
     const jumpCoolDown = 400;
 
-    const [sphereRef, api] = useSphere(() => ({
+    const [sphereRef, api] = useBox(() => ({
       mass: 100,
       fixedRotation: true,
       position: [0, 1, 0],
-      args: 0.2,
+      args: [0.2, 0.2, 0.2],
       material: {
         friction: 0
       }
@@ -120,9 +150,7 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
 
     const [height, setHeight] = useState(0);
     let selectedWeapon = 0;
-    const [Loadout, setLoadout] = useState([
-      "bab", "tranq", "naba"
-    ]);
+    const [Loadout, setLoadout] = useState(JSON.parse(localStorage.getItem("loadout")));
 
     
 
@@ -199,6 +227,7 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
         let velocity = new Vector3(0, 0, 0);
         let cameraDirection = new Vector3();
         camera.getWorldDirection(cameraDirection);
+        direction = cameraDirection.toArray();
 
         let w = new Vector3();
         w.setFromMatrixColumn(camera.matrix, 0);
@@ -208,7 +237,7 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
         d.setFromMatrixColumn(camera.matrix, 0);
 
         if (getHealth() > 0) {
-        if (state.current.jumping) {
+        if (state.current.jumping && !Taunt) {
           if (forward) {
             setVertical(0.75);      
           } else if (backward) {
@@ -225,7 +254,7 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
           }
           ChangeState("jump")
         } 
-        else if (state.current.crouching) {         
+        else if (state.current.crouching && !Taunt) {         
           if (forward) {
             setVertical(0.6);      
           } else if (backward) {
@@ -254,38 +283,40 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
           } 
         }
         else {
-          if (forward) {
-            setVertical(1);               
-          } else if (backward) {
-            setVertical(-1);
-          }  else {
-            setVertical(0)            
-          }
-          if (right) {
-            setHorizontal(1);    
-          } else if (left) {
-            setHorizontal(-1);
-          }  else {
-            setHorizontal(0)
-          }
-          if (right && forward && !state.current.jumping) {
-            ChangeState("sr")
-          } else if (left && forward && !state.current.jumping) {
-            ChangeState("sl")
-          }
-          if (forward && !right && !left && !state.current.jumping) {
-            ChangeState("run")  
-          }
-          if (right && !forward) {
-            ChangeState("r")
-          } else if (left && !forward && !state.current.jumping) {
-            ChangeState("l")
-          }
-          if (!right && !left && !forward && !backward && !state.current.jumping) {
-            ChangeState("idle")
+          if (!Taunt) {
+            if (forward) {
+              setVertical(1);               
+            } else if (backward) {
+              setVertical(-1);
+            }  else {
+              setVertical(0)            
+            }
+            if (right) {
+              setHorizontal(1);    
+            } else if (left) {
+              setHorizontal(-1);
+            }  else {
+              setHorizontal(0)
+            }
+            if (right && forward && !state.current.jumping) {
+              ChangeState("sr")
+            } else if (left && forward && !state.current.jumping) {
+              ChangeState("sl")
+            }
+            if (forward && !right && !left && !state.current.jumping) {
+              ChangeState("run")  
+            }
+            if (right && !forward) {
+              ChangeState("r")
+            } else if (left && !forward && !state.current.jumping) {
+              ChangeState("l")
+            }
+            if (!right && !left && !forward && !backward && !state.current.jumping) {
+              ChangeState("idle")
+            }
           }
         }
-        if (crouch) {
+        if (crouch && !Taunt) {
           state.current.crouching = true;
         } else {
           state.current.crouching = false;
@@ -316,16 +347,28 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
         // //console.log(cameraDirection.toArray()[1])
 
         /** Updates camera position */
-        camera.position.set(
-          sphereRef.current.position.x,
-          height + sphereRef.current.position.y,
-          sphereRef.current.position.z
-        );
+        if (!Taunt) {
+          camera.position.set(
+            sphereRef.current.position.x,
+            height + sphereRef.current.position.y,
+            sphereRef.current.position.z
+          )
+        }
+
+        if (TauntRef.current) {
+          TauntRef.current.position.set(sphereRef.current.position.x, sphereRef.current.position.y, sphereRef.current.position.z);
+        }
+
         if (PlayerRef.current) {
           PlayerRef.current.position.set(sphereRef.current.position.x,sphereRef.current.position.y,sphereRef.current.position.z)
         }     
+        setWorldRotation(cameraDirection.toArray())
         // setWorldRotation([cameraDirection.toArray()[0],cameraDirection.toArray()[1],cameraDirection.toArray()[2], "XYZ"])
         window.CameraPosition = sphereRef.current.position.toArray();
+        window.CameraRotation = camera.rotation.toArray();
+        var ttttt = new Vector3();
+        camera.getWorldDirection(ttttt)
+        window.CameraDirection = ttttt.toArray();
         // gr.current.position.set(
         //   sphereRef.current.position.x,
         //   height + sphereRef.current.position.y,
@@ -357,7 +400,7 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
           onControlsChange(sphereRef.current.position, cameraDirection);
         }
 
-        if (state.current.jumping && state.current.vel[1] < 0) {
+        if (state.current.jumping && state.current.vel[1] < 0 && !Taunt) {
           /** Ground check */
           const raycaster = new Raycaster(
             sphereRef.current.position,
@@ -372,7 +415,7 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
         }
 
     
-        if (jump && !state.current.jumping) {
+        if (jump && !state.current.jumping  && !Taunt) {
           const now = Date.now();
           if (now > state.current.timeTojump) {
             state.current.timeTojump = now + jumpCoolDown;
@@ -521,13 +564,24 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
       })
 
       useEffect(() => {
-        camera.near = 0.01;
+        camera.near = 0.001;
       }, [])
+
+      useEffect(() => {
+        if (controlsRef.current) {
+          controlsRef.current.lock()
+        }
+      }, [controlsRef.current])
+      
 
     return (
       <>
         <group>  
-          <PointerLockControls minPolarAngle={0.01} maxPolarAngle={3} ref={controlsRef} enabled={true} camera={camera} />               
+          { !Taunt ?
+          <PointerLockControls minPolarAngle={0.01} maxPolarAngle={3} ref={controlsRef} camera={camera} />   
+          :
+          <ThirdPersonCamera targetPosition={sphereRef.current} target={TauntRef.current} />
+          }           
         </group> 
         {/* <group ref={PlayerRef}>
           <UserWrapper
@@ -560,7 +614,14 @@ export const ControlsWrapper = ({ socket, PrimaryClip, setPrimaryClip, PrimaryAm
                 ''
               }
             </group>        
-          </group>   
+          </group>  
+          <group ref={TauntRef}>
+            {/* { sphereRef.current ?
+            <Taunt_Laugh group={TauntGroupRef} rotation={WorldRotation} position={sphereRef.current.position} /> 
+            :
+            ''
+            } */}
+          </group>         
       </>   
     )
 }

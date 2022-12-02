@@ -27,6 +27,13 @@ export const PlayerDataContext = React.createContext({
   setHealth: ""
 });
 
+export const MapFilter = ["de_arena"]
+
+export const CasualServers = [
+  "https://wakeful-whip-rifle.glitch.me",
+  // "http://127.0.0.1:5000"
+]
+
 function App() {
   const Game = lazy(() => import("./Game"));
 
@@ -96,6 +103,7 @@ function App() {
             document.getElementsByClassName("SplashVid")[0].play();
           }, 2000);
         }}
+        muted={true}
         className="SplashVid"
         src={Vid}
         onEnded={() => {

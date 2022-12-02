@@ -76,6 +76,10 @@ if (localStorage.getItem("setting.csOP") == null) {
     localStorage.setItem("setting.csOP", 1)
 }
 
+if (localStorage.getItem("loadout") == null) {
+    localStorage.setItem("loadout", JSON.stringify(["bab", "aba", "naba"]))
+}
+
 window.addEventListener(
     'beforeunload',
     function(e){
