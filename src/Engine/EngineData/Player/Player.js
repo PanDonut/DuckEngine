@@ -184,7 +184,7 @@ export const UserWrapper = ({
                     //     position={[0, -3.0625, 0]}
                     //   />
                     // </group>
-                    <RussianHat />
+                    <Parts.head />
                   )}
                 </group>
                 <group name="player_coll_arms" position={[0, 1.25, 0]} ref={arms}>

@@ -46,7 +46,7 @@ app.get("/config", function (req, res) {
 var GameData = {
     "points": {
         "blue": 0,
-        "green": 0
+        "yellow": 0
     }   
 }
 
@@ -66,7 +66,7 @@ ioServer.on('connection', (client) => {
   
     clients[client.id] = {}
     clients[client.id].effects = {};
-    clients[client.id].team = Object.entries(clients).filter(item => item[1].team == "green").length > Object.entries(clients).filter(item => item[1].team == "blue").length ? "blue" : "green";
+    clients[client.id].team = Object.entries(clients).filter(item => item[1].team == "yellow").length > Object.entries(clients).filter(item => item[1].team == "blue").length ? "blue" : "yellow";
     console.log(Object.entries(clients))
     console.log(clients[client.id].team)
     clients[client.id].health = 125;
@@ -82,6 +82,10 @@ ioServer.on('connection', (client) => {
         clients[client.id].name = data.name;        
         console.log(client.id + " logged in as " + data.name + " (" + data.uid + ")")
     })
+
+    client.on("ping", (callback) => {
+        callback();
+    });
 
     client.on("AddEffect", (data) => {
         clients[data.id].effects[data.name] = true;

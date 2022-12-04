@@ -80,6 +80,10 @@ if (localStorage.getItem("loadout") == null) {
     localStorage.setItem("loadout", JSON.stringify(["bab", "aba", "naba"]))
 }
 
+if (localStorage.getItem("cosmetics") == null) {
+    localStorage.setItem("cosmetics", JSON.stringify(["default", "", "", ""]))
+}
+
 window.addEventListener(
     'beforeunload',
     function(e){

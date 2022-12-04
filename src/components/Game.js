@@ -60,7 +60,7 @@ import HealthIcon from "./health.png";
 import HealthIconRed from "./health_red.png";
 
 import AmmoBGBlue from "./ammo_blue.png";
-import AmmoBGGreen from "./ammo_green.png";
+import AmmoBGYellow from "./ammo_yellow.png";
 import { DirectionalLightHelper } from "three";
 import { Vector2 } from "three";
 import { Observer } from "../Engine/EngineData/Wrappers/HookWrapers";
@@ -75,14 +75,18 @@ import { Projectile } from "../Engine/EngineData/Projectile";
 import TranqDart from "../Engine/EngineData/Player/Weapons/Projectile/TranqualizerProjectile";
 import { Delay } from '@shyrii/web-audio-effects';
 import { Ragdoll } from "../Engine/EngineData/Player/Ragdoll";
+import { CosmeticList } from "../Engine/EngineData/Cosmetics";
 
 var AudioList = [];
+
+var LastPingTimestamp = Date.now();
+var Ping = -1;
 
 var KillList = [];
 var GameData = {
   points: {
     blue: 0,
-    green: 0,
+    yellow: 0,
   },
 };
 
@@ -90,7 +94,7 @@ var Projectiles = [];
 
 let audioContext = new AudioContext();
 
-var team = "green";
+var team = "yellow";
 
 function CamEdit({LightRef, light}) {
   const { gl, camera, scene } = useThree();
@@ -154,15 +158,30 @@ export default function Game() {
     getPlayerData().setTeam(team)
   }, [team]);
   const [Cosmetics, setCosmetics] = useState(["bab", "daba", "naba"]);
-  const [Parts, setParts] = useState({
-    head: RussianHat,
-    body: RussianCoat_Body,
-    arms: {
-      L: RussianCoat_ArmL,
-      R: RussianCoat_ArmR,
-    },
-    legs: RussianCoat_Legs,
-  });
+  const [Parts, setParts] = useState();
+
+  useEffect(() => {
+    var Cosmetics = {};
+    var bar = new Promise((resolve, reject) => {
+      JSON.parse(localStorage.getItem("cosmetics")).map((element, index, array) => {
+        Object.entries(CosmeticList[element].data).forEach((element, i, arr) => {
+          Cosmetics[element[0]] = element[1];
+          console.log(index, array.length, i, arr.length)
+          if (index === array.length -1 && i === arr.length -1) { 
+            resolve() 
+          };
+        });
+        if (index === array.length -1) { 
+          resolve() 
+        };
+      });
+    });
+    bar.then(() => {
+      setParts(Cosmetics);
+      console.log(Cosmetics)
+      console.log("set cosmetics")
+    }) 
+  }, [])
 
   var bSunset = [Sunset];
 
@@ -270,6 +289,13 @@ export default function Game() {
       socketClient.on("gamedata", (data) => {
         GameData = data;
       });
+      setInterval(() => {
+        const start = Date.now();
+      
+        socketClient.emit("ping", () => {
+          Ping = Date.now() - start;
+        });
+      }, 1000);
     }
   }, [socketClient]);
 
@@ -393,7 +419,7 @@ export default function Game() {
       window.ID = socketClient.id;
     }
   }, [socketClient]);
-
+  
   return (
     <>
       {socketClient ? (
@@ -590,7 +616,7 @@ export default function Game() {
         />
       </div>
     </>
-  );
+  )
 }
 
 function GameUI({ clients, id, PlayerHealth }) {
@@ -605,7 +631,7 @@ function GameUI({ clients, id, PlayerHealth }) {
     <>
       <div className="Points">
         <p>{GameData.points.blue}</p>
-        <p>{GameData.points.green}</p>
+        <p>{GameData.points.yellow}</p>
       </div>
         <div style={{opacity: getHealth() > 0 ? 1 : 0}} className="Health">
           <img className="Red" src={HealthIconRed} />
@@ -649,18 +675,19 @@ function GameUI({ clients, id, PlayerHealth }) {
       <div style={{opacity: getHealth() > 0 ? 1 : 0}} className="UIAmmo">
         <h2 className="ClipCount">{0}</h2>
         <h3 className="AmmoCount">{0}</h3>
-        <img src={getPlayerData().team == "green" ? AmmoBGGreen : AmmoBGBlue} />
+        <img src={getPlayerData().team == "yellow" ? AmmoBGYellow : AmmoBGBlue} />
       </div>
+      <h3 className="Ping" style={{color: Ping < 80 ? "limegreen" : Ping < 130 ? "yellow" : "red"}}>{Ping}</h3>
       <Control>
-      <div
-      style={{
-        display: "inline-block",
-        width: "200px",
-        height: "100px",
-        background: 'blue'
-      }}
-    />
-    </Control>
+        <div
+        style={{
+          display: "inline-block",
+          width: "200px",
+          height: "100px",
+          background: 'blue'
+        }}
+        />
+      </Control>
     </>
   );
 }
